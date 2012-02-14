@@ -15,7 +15,7 @@ public class Row {
 	private final String name;
 	private final String displayName;
 	private final List<Column> columns;
-	private final boolean currentUser;
+	private final boolean highlighted;
 
 	public Row(Date date, String name, String displayName, List<Column> columns, boolean currentUser) {
 		if(date == null) throw new RuntimeException("date cannot be null");
@@ -23,7 +23,7 @@ public class Row {
 		this.name = name;
 		this.displayName = displayName;
 		this.columns = columns;
-		this.currentUser = currentUser;
+		this.highlighted = currentUser;
 	}
 	
 	public Date getDate() {
@@ -47,7 +47,7 @@ public class Row {
 		return name;
 	}
 
-	public boolean isCurrentUser() {
-		return currentUser;
+	public boolean isHighlighted() {
+		return highlighted;
 	}
 }

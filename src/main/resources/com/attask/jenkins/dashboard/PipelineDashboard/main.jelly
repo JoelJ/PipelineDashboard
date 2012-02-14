@@ -1,10 +1,10 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 	<style>
-		.currentUser {
+		.highlighted {
 			background-color: rgba(255, 255, 0, .3);
 		}
 
-		.currentUser:hover {
+		.highlighted:hover {
 			background-color: rgba(255, 255, 0, .6) !important;
 		}
 	</style>
@@ -57,7 +57,7 @@
 			</j:forEach>
 		</tr>
 		<j:forEach items="${it.getDisplayRows()}" var="row" indexVar="i">
-			<tr id="row-${row.getName()}" class="${row.isCurrentUser() ? 'currentUser' : ''}">
+			<tr id="row-${row.getName()}" class="${row.isHighlighted() ? 'highlighted' : ''}">
 				<td class="custom">${row.getDisplayName()}</td>
 				<j:forEach items="${row.getColumns()}" var="column">
 					<td>

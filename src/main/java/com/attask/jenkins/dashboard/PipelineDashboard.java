@@ -2,7 +2,6 @@ package com.attask.jenkins.dashboard;
 
 import hudson.Extension;
 import hudson.model.*;
-import hudson.security.HudsonPrivateSecurityRealm;
 import hudson.tasks.junit.TestResultAction;
 import hudson.util.RunList;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -82,14 +81,22 @@ public class PipelineDashboard extends View {
 	 */
 	@SuppressWarnings("UnusedDeclaration")
 	public List<Row> getDisplayRows() {
-		User currentUser = User.current();
-		
 		LOGGER.info("getDisplayRows starting");
+
+		Map<String, Build[]> map = findMatchingBuilds();
+		LOGGER.info("map size: " + map.size());
+
+		List<Row> result = generateRowData(User.current(), map);
+		LOGGER.info("result size: " + result.size());
+
+		return result;
+	}
+
+	private Map<String, Build[]> findMatchingBuilds() {
 		Map<String, Build[]> map = new HashMap<String, Build[]>();
-		Hudson hudson = Hudson.getInstance();
 		for (String jobName : jobs) {
 			try {
-				Job job = (Job) hudson.getItem(jobName);
+				Job job = (Job) Hudson.getInstance().getItem(jobName);
 				RunList builds = job.getBuilds();
 				for (Object buildObj : builds) {
 					Build build = (Build)buildObj;
@@ -118,9 +125,11 @@ public class PipelineDashboard extends View {
 				LOGGER.severe("Error while generating the map: " + t.getMessage() + "\n" + join(Arrays.asList(t.getStackTrace()), "\n"));
 			}
 		}
+		return map;
+	}
 
-		LOGGER.info("map size: " + map.size());
-		
+	private List<Row> generateRowData(User currentUser, Map<String, Build[]> map) {
+		Hudson hudson = Hudson.getInstance();
 		SortedSet<Row> rows = new TreeSet<Row>(new Comparator<Row>() {
 			public int compare(Row row1, Row row2) {
 				if(row1 == row2) return 0;
@@ -137,18 +146,20 @@ public class PipelineDashboard extends View {
 				List<Column> columns = new LinkedList<Column>();
 				Date date = null;
 				String displayName = rowName;
+				boolean isCulprit = false;
+
 				for (Build build : builds) {
 					if(build != null) {
 						LOGGER.info("\t" + build.getDisplayName() + " " + build.getDescription());
 						if(date == null) date = build.getTime();
-						
+
 						String testResult = "";
 						TestResultAction testResultAction = build.getAction(TestResultAction.class);
 						if(testResultAction != null) {
 							int failures = testResultAction.getFailCount();
 							testResult = "(" + failures + " failures" + ")";
 						}
-						
+
 						String rowDisplayName = testResult.isEmpty() ? build.getDisplayName() : testResult;
 
 						columns.add(new Column(rowDisplayName, build.getUrl() + "testReport", hudson.getRootUrl() +"/static/832a5f9d/images/24x24/" + build.getBuildStatusUrl()));
@@ -159,24 +170,18 @@ public class PipelineDashboard extends View {
 					//noinspection StringEquality
 					if(displayName == rowName && build.getDescription() != null && !build.getDescription().trim().isEmpty()) { // I really do want to do reference equals and not value equals.
 						displayName = build.getDescription();
+						isCulprit = getUserIsCulprit(currentUser, build);
 					}
 				}
 				if(date == null) date = new Date();
 
-				boolean isCurrentUser = false;
-				if(currentUser != null) {
-					if(displayName.contains(currentUser.getFullName()) ||
-							displayName.contains(currentUser.getId())) {
-						isCurrentUser = true;
-					}
-				}
-				rows.add(new Row(date, rowName, displayName, columns, isCurrentUser));
+				rows.add(new Row(date, rowName, displayName, columns, isCulprit));
 			} catch (Throwable t) {
 				LOGGER.severe("Error while generating the list: " + t.getMessage() + "\n" + join(Arrays.asList(t.getStackTrace()), "\n"));
 			}
 		}
 		List<Row> result = new LinkedList<Row>();
-		
+
 		int i = 0;
 		for (Row row : rows) {
 			result.add(row);
@@ -185,9 +190,25 @@ public class PipelineDashboard extends View {
 				break;
 			}
 		}
-
-		LOGGER.info("result size: " + result.size());
 		return result;
+	}
+
+	private boolean getUserIsCulprit(User currentUser, Build build) {
+		if(currentUser == null || build == null) return false;
+
+		String description = build.getDescription();
+		if(description.contains(currentUser.getFullName()) || description.contains(currentUser.getId())) {
+			return true;
+		}
+
+		//noinspection unchecked
+		for (User culprit : (Set<User>)build.getCulprits()) {
+			if(culprit.getId().equals(currentUser.getId())) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	private String getStackTraceMethod(StackTraceElement[] stackTrace) {
