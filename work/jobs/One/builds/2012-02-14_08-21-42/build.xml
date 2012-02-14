@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<build>
+  <actions>
+    <hudson.model.CauseAction>
+      <causes>
+        <hudson.model.Cause_-UserIdCause/>
+      </causes>
+    </hudson.model.CauseAction>
+    <hudson.tasks.junit.TestResultAction>
+      <owner class="build" reference="../../.."/>
+      <descriptions class="java.util.concurrent.ConcurrentHashMap"/>
+      <failCount>0</failCount>
+      <skipCount>0</skipCount>
+      <totalCount>2</totalCount>
+      <testData/>
+    </hudson.tasks.junit.TestResultAction>
+  </actions>
+  <number>5</number>
+  <result>SUCCESS</result>
+  <description>Branch:master Rev:3aa32ff0&lt;br/&gt;&#xd;
+Author:Joel Johnson</description>
+  <duration>204</duration>
+  <charset>MacRoman</charset>
+  <keepLog>false</keepLog>
+  <builtOn></builtOn>
+  <workspace>/Users/joeljohnson/Development/java/jenkins/PipelineDashboard/work/workspace/One</workspace>
+  <hudsonVersion>1.449</hudsonVersion>
+  <scm class="hudson.scm.NullChangeLogParser"/>
+  <culprits/>
+</build>

@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<build>
+  <actions>
+    <hudson.model.CauseAction>
+      <causes>
+        <hudson.model.Cause_-UserIdCause/>
+      </causes>
+    </hudson.model.CauseAction>
+  </actions>
+  <number>2</number>
+  <result>SUCCESS</result>
+  <description>Branch:master Rev:aa32ff0&lt;br/&gt;&#xd;
+Author:Joel Johnson</description>
+  <duration>17</duration>
+  <charset>MacRoman</charset>
+  <keepLog>false</keepLog>
+  <builtOn></builtOn>
+  <workspace>/Users/joeljohnson/Development/java/jenkins/PipelineDashboard/work/workspace/Three</workspace>
+  <hudsonVersion>1.449</hudsonVersion>
+  <scm class="hudson.scm.NullChangeLogParser"/>
+  <culprits/>
+</build>

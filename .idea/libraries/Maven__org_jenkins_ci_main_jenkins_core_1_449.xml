@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.jenkins-ci.main:jenkins-core:1.449">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jenkins-ci/main/jenkins-core/1.449/jenkins-core-1.449.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jenkins-ci/main/jenkins-core/1.449/jenkins-core-1.449-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jenkins-ci/main/jenkins-core/1.449/jenkins-core-1.449-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

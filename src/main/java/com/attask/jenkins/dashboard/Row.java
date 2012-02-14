@@ -1,0 +1,53 @@
+package com.attask.jenkins.dashboard;
+
+import java.util.Date;
+import java.util.List;
+
+/**
+ * Holds the data needed to render a row of the view.
+ *
+ * User: joeljohnson
+ * Date: 2/9/12
+ * Time: 9:56 AM
+ */
+public class Row {
+	private final Date date;
+	private final String name;
+	private final String displayName;
+	private final List<Column> columns;
+	private final boolean currentUser;
+
+	public Row(Date date, String name, String displayName, List<Column> columns, boolean currentUser) {
+		if(date == null) throw new RuntimeException("date cannot be null");
+		this.date = date;
+		this.name = name;
+		this.displayName = displayName;
+		this.columns = columns;
+		this.currentUser = currentUser;
+	}
+	
+	public Date getDate() {
+		return date;
+	}
+
+	public String getName() {
+		return name;
+	}
+	
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public List<Column> getColumns() {
+		return columns;
+	}
+
+	@Override
+	public String toString() {
+		return name;
+	}
+
+	public boolean isCurrentUser() {
+		return currentUser;
+	}
+}

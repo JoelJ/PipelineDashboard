@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Built-By: joeljohnson
+Created-By: Apache Maven
+Build-Jdk: 1.6.0_29
+Extension-Name: PipelineDashboard
+Implementation-Title: PipelineDashboard
+Implementation-Version: 1.8-SNAPSHOT
+Group-Id: com.attask.jenkins.dashboard
+Short-Name: PipelineDashboard
+Long-Name: PipelineDashboard
+Url: http://jenkins-ci.org/plugin/PipelineDashboard/
+Plugin-Version: 1.8-SNAPSHOT (private-02/14/2012 10:37-joeljohnson)
+Hudson-Version: 1.449
+Jenkins-Version: 1.449
+Plugin-Developers: 
+

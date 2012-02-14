@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson>
+  <version>1.0</version>
+  <numExecutors>2</numExecutors>
+  <mode>NORMAL</mode>
+  <authorizationStrategy class="hudson.security.AuthorizationStrategy$Unsecured"/>
+  <securityRealm class="hudson.security.SecurityRealm$None"/>
+  <jdks/>
+  <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
+  <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
+  <clouds/>
+  <slaves/>
+  <scmCheckoutRetryCount>0</scmCheckoutRetryCount>
+  <views>
+    <hudson.model.AllView>
+      <owner class="hudson" reference="../../.."/>
+      <name>All</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+    </hudson.model.AllView>
+    <com.attask.jenkins.dashboard.PipelineDashboard>
+      <owner class="hudson" reference="../../.."/>
+      <name>Bacon</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <jobs class="com.attask.jenkins.dashboard.PipelineDashboard$1" serialization="custom">
+        <unserializable-parents/>
+        <list>
+          <default>
+            <size>4</size>
+          </default>
+          <int>10</int>
+          <string>Oak</string>
+          <string>Ruby</string>
+          <string>Focused</string>
+          <string>New</string>
+        </list>
+        <com.attask.jenkins.dashboard.PipelineDashboard_-1>
+          <default>
+            <outer-class reference="../../../.."/>
+          </default>
+        </com.attask.jenkins.dashboard.PipelineDashboard_-1>
+      </jobs>
+      <descriptionRegex>\bRevision:\s*(\w+)\b</descriptionRegex>
+      <descriptionRegexGroup>1</descriptionRegexGroup>
+      <numberDisplayed>6</numberDisplayed>
+      <firstColumnName>Revision</firstColumnName>
+    </com.attask.jenkins.dashboard.PipelineDashboard>
+    <listView>
+      <owner class="hudson" reference="../../.."/>
+      <name>Cheesecake</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <jobNames class="tree-set">
+        <comparator class="hudson.util.CaseInsensitiveComparator"/>
+      </jobNames>
+      <jobFilters/>
+      <columns>
+        <hudson.views.StatusColumn/>
+        <hudson.views.WeatherColumn/>
+        <hudson.views.JobColumn/>
+        <hudson.views.LastSuccessColumn/>
+        <hudson.views.LastFailureColumn/>
+        <hudson.views.LastDurationColumn/>
+        <hudson.views.BuildButtonColumn/>
+      </columns>
+    </listView>
+  </views>
+  <primaryView>All</primaryView>
+  <slaveAgentPort>0</slaveAgentPort>
+  <label></label>
+  <nodeProperties/>
+  <globalNodeProperties/>
+  <disabledAdministrativeMonitors/>
+</hudson>
