@@ -1,3 +1,0 @@
-#Mon Jan 23 14:02:30 PST 2012
-url=\ Repository URL that artifacts were deployed.\n
-getResult=\ Result of the deployment. During the build, this value is null.\n

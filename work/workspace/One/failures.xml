@@ -1,6 +1,0 @@
-
-<testsuite>
-     <testcase classname="foo" name="ASuccessfulTest"/>
-     <testcase classname="foo" name="AnotherSuccessfulTest"/>
- </testsuite>
-

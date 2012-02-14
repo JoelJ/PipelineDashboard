@@ -1,5 +1,0 @@
-<l:dependencies xmlns:l='licenses'>
-  <l:dependency name='PipelineDashboard' groupId='com.attask.jenkins.dashboard' artifactId='PipelineDashboard' version='1.8-SNAPSHOT' url='http://jenkins-ci.org/plugin/PipelineDashboard/'>
-    <l:description />
-  </l:dependency>
-</l:dependencies>
