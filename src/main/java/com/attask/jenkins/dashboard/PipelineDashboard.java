@@ -4,6 +4,7 @@ import hudson.Extension;
 import hudson.model.*;
 import hudson.tasks.junit.TestResultAction;
 import hudson.util.RunList;
+import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -34,7 +35,7 @@ public class PipelineDashboard extends View {
 	}
 	
 	public static Collection<String> getAllJobs() {
-		return Hudson.getInstance().getJobNames();
+		return Jenkins.getInstance().getJobNames();
 	}
 
 	@Override
@@ -83,20 +84,21 @@ public class PipelineDashboard extends View {
 	public List<Row> getDisplayRows() {
 		LOGGER.info("getDisplayRows starting");
 
-		Map<String, Build[]> map = findMatchingBuilds();
+		Jenkins jenkins = Jenkins.getInstance();
+		Map<String, Build[]> map = findMatchingBuilds(jenkins);
 		LOGGER.info("map size: " + map.size());
 
-		List<Row> result = generateRowData(User.current(), map);
+		List<Row> result = generateRowData(jenkins, User.current(), map);
 		LOGGER.info("result size: " + result.size());
 
 		return result;
 	}
 
-	private Map<String, Build[]> findMatchingBuilds() {
+	private Map<String, Build[]> findMatchingBuilds(Jenkins jenkins) {
 		Map<String, Build[]> map = new HashMap<String, Build[]>();
 		for (String jobName : jobs) {
 			try {
-				Job job = (Job) Hudson.getInstance().getItem(jobName);
+				Job job = (Job) jenkins.getItem(jobName);
 				RunList builds = job.getBuilds();
 				for (Object buildObj : builds) {
 					Build build = (Build)buildObj;
@@ -128,8 +130,7 @@ public class PipelineDashboard extends View {
 		return map;
 	}
 
-	private List<Row> generateRowData(User currentUser, Map<String, Build[]> map) {
-		Hudson hudson = Hudson.getInstance();
+	private List<Row> generateRowData(Jenkins jenkins, User currentUser, Map<String, Build[]> map) {
 		SortedSet<Row> rows = new TreeSet<Row>(new Comparator<Row>() {
 			public int compare(Row row1, Row row2) {
 				if(row1 == row2) return 0;
@@ -162,7 +163,7 @@ public class PipelineDashboard extends View {
 
 						String rowDisplayName = testResult.isEmpty() ? build.getDisplayName() : testResult;
 
-						columns.add(new Column(rowDisplayName, build.getUrl() + "testReport", hudson.getRootUrl() +"/static/832a5f9d/images/24x24/" + build.getBuildStatusUrl()));
+						columns.add(new Column(rowDisplayName, build.getUrl() + "testReport", jenkins.getRootUrl() +"/static/832a5f9d/images/24x24/" + build.getBuildStatusUrl()));
 					} else {
 						LOGGER.info("\tAdded empty column");
 						columns.add(Column.EMPTY);
@@ -253,7 +254,7 @@ public class PipelineDashboard extends View {
 
 	@Override
 	public synchronized Item doCreateItem(StaplerRequest request, StaplerResponse response) throws IOException, ServletException {
-		Item item = Hudson.getInstance().doCreateItem(request, response);
+		Item item = Jenkins.getInstance().doCreateItem(request, response);
 		if (item != null) {
 			jobs.add(item.getName());
 			owner.save();
