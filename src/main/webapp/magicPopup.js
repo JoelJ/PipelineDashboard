@@ -23,7 +23,12 @@ var openPopup = (function(e){
 });
 
 var closePopup = (function(e) {
-	if(e.target != window.commitTooltip && !$(e.target).hasClassName('custom')) {
+	var parent = e.target;
+	while(parent && parent != window.commitTooltip) {
+		parent = parent.parentElement;
+	}
+
+	if(parent != window.commitTooltip && !$(e.target).hasClassName('custom')) {
 		window.commitTooltip.style.display = "none";
 	}
 });
@@ -38,10 +43,8 @@ var showContent = (function(element, url, x, y) {
 
 			var changeSet = result.changeSet.items;
 			if(changeSet.length <= 0) {
-				console.log("not showing");
 				return;
 			}
-			console.log("showing");
 
 			var html = '<div class="header">Revisions Included in Run</div>';
 			changeSet.each(function(it) {
