@@ -9,7 +9,7 @@
 
   <groupId>com.attask.jenkins.dashboard</groupId>
   <artifactId>PipelineDashboard</artifactId>
-  <version>1.8-SNAPSHOT</version>
+  <version>1.9-SNAPSHOT</version>
   <packaging>hpi</packaging>
 
   <!-- get every artifact through maven.glassfish.org, which proxies all the artifacts that we need -->
