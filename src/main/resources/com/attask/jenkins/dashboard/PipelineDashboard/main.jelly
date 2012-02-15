@@ -23,7 +23,10 @@
 			text-align: center;
 		}
 	</style>
-	<script type="text/javascript" src="/plugin/PipelineDashboard/magicPopup.js"></script>
+
+	<j:if test="${it.clickForCommitDetails}">
+		<script type="text/javascript" src="/plugin/PipelineDashboard/magicPopup.js"></script>
+	</j:if>
 
 	<table id="projectstatus" class="pane bigtable sortable">
 		<tr style="border-top: 0px;">

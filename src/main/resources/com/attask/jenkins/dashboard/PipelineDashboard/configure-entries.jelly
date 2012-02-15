@@ -49,4 +49,7 @@
 	<f:entry title="Show Failure Count" field="showFailureCount">
 		<f:checkbox/>
 	</f:entry>
+	<f:entry title="Allow clicking the left column for commit details" field="clickForCommitDetails">
+		<f:checkbox/>
+	</f:entry>
 </j:jelly>

@@ -30,6 +30,7 @@ public class PipelineDashboard extends View {
 	public String firstColumnName;
 	public boolean showBuildName;
 	public boolean showFailureCount;
+	public boolean clickForCommitDetails;
 
 	@DataBoundConstructor
 	public PipelineDashboard(String name) {
@@ -79,6 +80,7 @@ public class PipelineDashboard extends View {
 		
 		this.showBuildName = "on".equals(request.getParameter("_.showBuildName"));
 		this.showFailureCount = "on".equals(request.getParameter("_.showFailureCount"));
+		this.clickForCommitDetails = "on".equals(request.getParameter("_.clickForCommitDetails"));
 	}
 
 	/**
