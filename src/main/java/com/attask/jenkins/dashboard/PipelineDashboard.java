@@ -219,7 +219,7 @@ public class PipelineDashboard extends View {
 
 		//noinspection unchecked
 		for (User culprit : (Set<User>)build.getCulprits()) {
-			if(culprit.getId().equals(currentUser.getId())) {
+			if(culprit.getId().equals(currentUser.getId()) || culprit.getFullName().equals(currentUser.getFullName())) {
 				return true;
 			}
 		}

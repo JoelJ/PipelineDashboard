@@ -43,12 +43,12 @@ var showContent = (function(element, url, x, y) {
 			}
 			console.log("showing");
 
-			var html = '<div class="header">Commits</div>';
+			var html = '<div class="header">Revisions Included in Run</div>';
 			changeSet.each(function(it) {
 				html += '<hr/>';
 				html += '<div class="commit">';
+				html += 	'<div>Revision: <span class="revision">'+it.id+'</span></div>';
 				html += 	'<div>Author: <span class="author">'+it.author.fullName+'</span></div>';
-				html += 	'<div>Revision: <span class="revision">'+it.id.substring(0, 7)+'</span></div>';
 				html += 	'<div>Comment: "<span class="comment">'+it.comment.trim().replace('\n', '<br/>')+'</span>"</div>';
 				html += '</div>';
 			});
