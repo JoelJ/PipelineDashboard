@@ -1,12 +1,14 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 	<style>
-		.highlighted {
-			background-color: rgba(255, 255, 0, .3);
-		}
+		<j:if test="${it.highlightCommitter}">
+			.highlighted {
+				background-color: rgba(255, 255, 0, .3);
+			}
 
-		.highlighted:hover {
-			background-color: rgba(255, 255, 0, .6) !important;
-		}
+			.highlighted:hover {
+				background-color: rgba(255, 255, 0, .6) !important;
+			}
+		</j:if>
 
 		#commitTooltip {
 			border: 1px solid #AAA;
