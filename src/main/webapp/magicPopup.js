@@ -19,7 +19,7 @@ var openPopup = (function(e){
 	var siblings = e.target.siblings();
 	var first = siblings[0];
 	var url = first.getAttribute('url') + "api/json";
-	showContent(div, url, e.clientX, e.clientY);
+	showContent(div, url, e.clientX + window.scrollX, e.clientY + window.scrollY);
 });
 
 var closePopup = (function(e) {
