@@ -34,6 +34,7 @@ public class PipelineDashboard extends View {
 		super(name);
 	}
 	
+	@SuppressWarnings("UnusedDeclaration")
 	public static Collection<String> getAllJobs() {
 		return Jenkins.getInstance().getJobNames();
 	}
@@ -85,16 +86,16 @@ public class PipelineDashboard extends View {
 		LOGGER.info("getDisplayRows starting");
 
 		Jenkins jenkins = Jenkins.getInstance();
-		Map<String, Build[]> map = findMatchingBuilds(jenkins);
+		Map<String, Build[]> map = findMatchingBuilds(jenkins, jobs, descriptionRegex, descriptionRegexGroup);
 		LOGGER.info("map size: " + map.size());
 
-		List<Row> result = generateRowData(jenkins, User.current(), map);
+		List<Row> result = generateRowData(jenkins.getRootUrl(), User.current(), map);
 		LOGGER.info("result size: " + result.size());
 
 		return result;
 	}
 
-	private Map<String, Build[]> findMatchingBuilds(Jenkins jenkins) {
+	protected Map<String, Build[]> findMatchingBuilds(ItemGroup<TopLevelItem> jenkins, List<String> jobs, String descriptionRegex, int descriptionRegexGroup) {
 		Map<String, Build[]> map = new HashMap<String, Build[]>();
 		for (String jobName : jobs) {
 			try {
@@ -102,22 +103,15 @@ public class PipelineDashboard extends View {
 				RunList builds = job.getBuilds();
 				for (Object buildObj : builds) {
 					Build build = (Build)buildObj;
-					String buildName = build.getDisplayName();
 					String buildDescription = build.getDescription();
 					if(buildDescription == null || "".equals(buildDescription.trim())) {
-						LOGGER.info(job.getDisplayName() + " " +build.getDisplayName() + " Description " + buildDescription);
-						LOGGER.info("There was no build description. Skipping");
 						continue;
 					}
 					buildDescription = buildDescription.replaceAll("(\n|\r)", " "); //normalize whitespace
 
-					LOGGER.info(job.getDisplayName() + " " +build.getDisplayName() + " Description " + buildDescription);
 					if(buildDescription.matches(descriptionRegex)) {
-						LOGGER.info("Matched the description of " + jobName + " " + buildName);
-						String key = buildDescription.replaceFirst(descriptionRegex, "$" + this.descriptionRegexGroup);
-						LOGGER.info("\tResult: ``" + key + "``");
+						String key = buildDescription.replaceFirst(descriptionRegex, "$" + descriptionRegexGroup);
 						if(!map.containsKey(key)) {
-							LOGGER.info("Entry " + key + " doesn't exist, creating a new one");
 							map.put(key, new Build[jobs.size()]);
 						}
 						map.get(key)[jobs.indexOf(jobName)] = build;
@@ -125,12 +119,15 @@ public class PipelineDashboard extends View {
 				}
 			} catch(Throwable t) {
 				LOGGER.severe("Error while generating the map: " + t.getMessage() + "\n" + join(Arrays.asList(t.getStackTrace()), "\n"));
+				if(t.getCause() != null) {
+					LOGGER.severe("Nested Exception: " + t.getCause().getClass().getCanonicalName() + t.getCause().getMessage() + "\n" + join(Arrays.asList(t.getStackTrace()), "\n"));
+				}
 			}
 		}
 		return map;
 	}
 
-	private List<Row> generateRowData(Jenkins jenkins, User currentUser, Map<String, Build[]> map) {
+	protected List<Row> generateRowData(String rootUrl, User currentUser, Map<String, Build[]> map) {
 		SortedSet<Row> rows = new TreeSet<Row>(new Comparator<Row>() {
 			public int compare(Row row1, Row row2) {
 				if(row1 == row2) return 0;
@@ -163,7 +160,7 @@ public class PipelineDashboard extends View {
 
 						String rowDisplayName = testResult.isEmpty() ? build.getDisplayName() : testResult;
 
-						columns.add(new Column(rowDisplayName, build.getUrl() + "testReport", jenkins.getRootUrl() +"/static/832a5f9d/images/24x24/" + build.getBuildStatusUrl()));
+						columns.add(new Column(rowDisplayName, build.getUrl() + "testReport", rootUrl +"/static/832a5f9d/images/24x24/" + build.getBuildStatusUrl()));
 					} else {
 						LOGGER.info("\tAdded empty column");
 						columns.add(Column.EMPTY);
@@ -178,7 +175,10 @@ public class PipelineDashboard extends View {
 
 				rows.add(new Row(date, rowName, displayName, columns, isCulprit));
 			} catch (Throwable t) {
-				LOGGER.severe("Error while generating the list: " + t.getMessage() + "\n" + join(Arrays.asList(t.getStackTrace()), "\n"));
+				LOGGER.severe("Error while generating the list: " + t.getClass().getCanonicalName() + t.getMessage() + "\n" + join(Arrays.asList(t.getStackTrace()), "\n"));
+				if(t.getCause() != null) {
+					LOGGER.severe("Nested Exception: " + t.getCause().getClass().getCanonicalName() + t.getCause().getMessage() + "\n" + join(Arrays.asList(t.getStackTrace()), "\n"));
+				}
 			}
 		}
 		List<Row> result = new LinkedList<Row>();
@@ -212,15 +212,11 @@ public class PipelineDashboard extends View {
 		return false;
 	}
 
-	private String getStackTraceMethod(StackTraceElement[] stackTrace) {
-		return join(Arrays.asList(stackTrace), "\n");
-	}
-
 	/**
 	 * Generates a flat string
-	 * @param collection
-	 * @param separator
-	 * @return
+	 * @param collection The collection to combine
+	 * @param separator The string to separate each element with
+	 * @return The toString of each element of the given collection, separated by the given separator.
 	 */
 	private String join(Collection<?> collection, String separator) {
 		if(collection == null) return "";
