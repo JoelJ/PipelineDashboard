@@ -22,6 +22,11 @@
 			font-size: 15px;
 			text-align: center;
 		}
+
+		a.sortheader {
+			text-decoration: none;
+			color: black;
+		}
 	</style>
 
 	<j:if test="${it.clickForCommitDetails}">
