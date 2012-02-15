@@ -24,8 +24,12 @@
 		}
 	</style>
 
+	<j:set var="views" value="${it.owner.views}"/>
+	<j:set var="currentView" value="${it}"/>
+	<st:include page="viewTabs.jelly" it="${it.owner.viewsTabBar}"/>
+
 	<j:if test="${it.clickForCommitDetails}">
-		<script type="text/javascript" src="/plugin/PipelineDashboard/magicPopup.js"></script>
+		<script type="text/javascript" src="${Jenkins.getInstance().getRootUrl()}/plugin/PipelineDashboard/magicPopup.js"></script>
 	</j:if>
 
 	<table id="projectstatus" class="pane bigtable sortable">
