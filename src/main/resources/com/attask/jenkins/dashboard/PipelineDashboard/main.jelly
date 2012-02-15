@@ -7,6 +7,21 @@
 		.highlighted:hover {
 			background-color: rgba(255, 255, 0, .6) !important;
 		}
+
+		#commitTooltip {
+			border: 1px solid #AAA;
+			border-radius: 5px;
+			background-color: #EEE;
+			max-width: 400px;
+			padding: 5px;
+			position: absolute;
+			zIndex: 200;
+		}
+
+		#commitTooltip .header {
+			font-size: 15px;
+			text-align: center;
+		}
 	</style>
 	<script type="text/javascript" src="/plugin/PipelineDashboard/magicPopup.js"></script>
 

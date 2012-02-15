@@ -11,13 +11,8 @@ var openPopup = (function(e){
 		div = window.commitTooltip;
 	} else {
 		div = document.createElement("div");
-		div.setAttribute('id', 'commitTooltop');
+		div.setAttribute('id', 'commitTooltip');
 		window.commitTooltip = div;
-		div.style.position = "absolute";
-		div.style.zIndex = "200";
-		div.style.border = "1px solid #AAA";
-		div.style.backgroundColor = "#EEE";
-		div.style.padding = "5px";
 		document.body.appendChild(div);
 	}
 
@@ -50,10 +45,11 @@ var showContent = (function(element, url, x, y) {
 
 			var html = '<div class="header">Commits</div>';
 			changeSet.each(function(it) {
+				html += '<hr/>';
 				html += '<div class="commit">';
-				html += 	'<div class="author">'+it.author.fullName+'</div>';
-				html += 	'<div class="revision">'+it.id.substring(0, 7)+'</div>';
-				html += 	'<div class="comment">'+it.comment+'</div>';
+				html += 	'<div>Author: <span class="author">'+it.author.fullName+'</span></div>';
+				html += 	'<div>Revision: <span class="revision">'+it.id.substring(0, 7)+'</span></div>';
+				html += 	'<div>Comment: "<span class="comment">'+it.comment.trim().replace('\n', '<br/>')+'</span>"</div>';
 				html += '</div>';
 			});
 
