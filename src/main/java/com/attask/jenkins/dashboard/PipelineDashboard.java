@@ -175,7 +175,7 @@ public class PipelineDashboard extends View {
 							rowDisplayName += testResult;
 						}
 
-						columns.add(new Column(rowDisplayName, build.getUrl() + "testReport", rootUrl +"/static/832a5f9d/images/24x24/" + build.getBuildStatusUrl()));
+						columns.add(new Column(rowDisplayName, build.getUrl(), rootUrl +"/static/832a5f9d/images/24x24/" + build.getBuildStatusUrl()));
 					} else {
 						LOGGER.info("\tAdded empty column");
 						columns.add(Column.EMPTY);

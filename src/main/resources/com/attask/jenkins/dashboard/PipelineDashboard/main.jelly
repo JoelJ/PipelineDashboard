@@ -8,44 +8,7 @@
 			background-color: rgba(255, 255, 0, .6) !important;
 		}
 	</style>
-	<!--<script>
-		Event.observe(window, 'load', function() {
-			console.log("started");
-			var mouseenter = (function(e){
-				console.log("mouse entered");
-				var div;
-				if(window.commitTooltip) {
-					div = window.commitTooltip;
-				} else {
-					div = document.createElement("div");
-					window.commitTooltip = div
-					div.style.position = "absolute";
-					div.style.zIndex = "200"
-					div.style.border = "1px solid #AAA";
-					div.style.backgroundColor = "#EEE";
-					div.style.height = "14px";
-					div.innerHTML = "Hello There!";
-
-					document.body.appendChild(div);
-				}
-
-				div.style.left = e.clientX + "px";
-				div.style.top = e.clientY + "px";
-				div.style.display = "block";
-			});
-
-			var mouseleave = (function(e) {
-				console.log("mouse leave", e.target);
-				e.target.style.display = "none";
-			});
-
-			$$(".custom").each(function(it) {
-				console.log(it);
-				it.observe("mouseover", mouseenter);
-				it.observe("mouseleave", mouseleave);
-			});
-		});
-	</script>-->
+	<script type="text/javascript" src="/plugin/PipelineDashboard/magicPopup.js"></script>
 
 	<table id="projectstatus" class="pane bigtable sortable">
 		<tr style="border-top: 0px;">
@@ -60,9 +23,9 @@
 			<tr id="row-${row.getName()}" class="${row.isHighlighted() ? 'highlighted' : ''}">
 				<td class="custom">${row.getDisplayName()}</td>
 				<j:forEach items="${row.getColumns()}" var="column">
-					<td>
+					<td url="${column.getUrl()}">
 						<j:if test="${!column.isEmpty()}">
-							<a href="${column.getUrl()}"><img src="${column.getBuildStatusUrl()}"/>${column.getName()}</a>
+							<a href="${column.getUrl()}testReport"><img src="${column.getBuildStatusUrl()}"/>${column.getName()}</a>
 						</j:if>
 						<j:if test="${column.isEmpty()}">
 							<span>?</span>
