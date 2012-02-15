@@ -61,10 +61,10 @@
 				<td class="custom">${row.getDisplayName()}</td>
 				<j:forEach items="${row.getColumns()}" var="column">
 					<td>
-						<j:if test="${column.getName() != ''}">
+						<j:if test="${!column.isEmpty()}">
 							<a href="${column.getUrl()}"><img src="${column.getBuildStatusUrl()}"/>${column.getName()}</a>
 						</j:if>
-						<j:if test="${column.getName() == ''}">
+						<j:if test="${column.isEmpty()}">
 							<span>?</span>
 						</j:if>
 					</td>

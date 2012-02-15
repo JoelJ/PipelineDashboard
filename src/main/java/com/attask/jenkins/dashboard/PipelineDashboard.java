@@ -28,6 +28,8 @@ public class PipelineDashboard extends View {
     public int descriptionRegexGroup;
     public int numberDisplayed;
 	public String firstColumnName;
+	public boolean showBuildName;
+	public boolean showFailureCount;
 
 	@DataBoundConstructor
 	public PipelineDashboard(String name) {
@@ -74,6 +76,9 @@ public class PipelineDashboard extends View {
 		}
 
 		this.firstColumnName = request.getParameter("_.firstColumnName");
+		
+		this.showBuildName = "on".equals(request.getParameter("_.showBuildName"));
+		this.showFailureCount = "on".equals(request.getParameter("_.showFailureCount"));
 	}
 
 	/**
@@ -89,7 +94,7 @@ public class PipelineDashboard extends View {
 		Map<String, Build[]> map = findMatchingBuilds(jenkins, jobs, descriptionRegex, descriptionRegexGroup);
 		LOGGER.info("map size: " + map.size());
 
-		List<Row> result = generateRowData(jenkins.getRootUrl(), User.current(), map);
+		List<Row> result = generateRowData(jenkins.getRootUrl(), User.current(), map, this.showBuildName, this.showFailureCount);
 		LOGGER.info("result size: " + result.size());
 
 		return result;
@@ -127,7 +132,7 @@ public class PipelineDashboard extends View {
 		return map;
 	}
 
-	protected List<Row> generateRowData(String rootUrl, User currentUser, Map<String, Build[]> map) {
+	protected List<Row> generateRowData(String rootUrl, User currentUser, Map<String, Build[]> map, boolean showBuildName, boolean showFailureCount) {
 		SortedSet<Row> rows = new TreeSet<Row>(new Comparator<Row>() {
 			public int compare(Row row1, Row row2) {
 				if(row1 == row2) return 0;
@@ -151,14 +156,24 @@ public class PipelineDashboard extends View {
 						LOGGER.info("\t" + build.getDisplayName() + " " + build.getDescription());
 						if(date == null) date = build.getTime();
 
-						String testResult = "";
-						TestResultAction testResultAction = build.getAction(TestResultAction.class);
-						if(testResultAction != null) {
-							int failures = testResultAction.getFailCount();
-							testResult = "(" + failures + " failures" + ")";
+						String rowDisplayName = "";
+						
+						if(showBuildName) {
+							rowDisplayName = build.getDisplayName();
 						}
-
-						String rowDisplayName = testResult.isEmpty() ? build.getDisplayName() : testResult;
+						
+						if(showFailureCount) {
+							String testResult = "";
+							TestResultAction testResultAction = build.getAction(TestResultAction.class);
+							if(testResultAction != null) {
+								int failures = testResultAction.getFailCount();
+								testResult = "(" + failures + " failures" + ")";
+							}
+							if(!rowDisplayName.isEmpty()) {
+								rowDisplayName += " ";
+							}
+							rowDisplayName += testResult;
+						}
 
 						columns.add(new Column(rowDisplayName, build.getUrl() + "testReport", rootUrl +"/static/832a5f9d/images/24x24/" + build.getBuildStatusUrl()));
 					} else {

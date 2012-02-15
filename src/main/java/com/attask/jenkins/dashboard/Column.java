@@ -8,16 +8,26 @@ package com.attask.jenkins.dashboard;
  * Time: 10:29 AM
  */
 public class Column {
-	public static Column EMPTY = new Column("", "", "");
+	public static Column EMPTY = new Column();
 
 	private final String name;
 	private final String url;
 	private final String buildStatusUrl;
+	private final boolean isEmpty;
 
-	public Column(String name, String url, String buildStatusUrl) {
+	private Column(String name, String url, String buildStatusUrl, boolean isEmpty) {
 		this.name = name;
 		this.url = url;
 		this.buildStatusUrl = buildStatusUrl;
+		this.isEmpty = isEmpty;
+	}
+
+	public Column(String name, String url, String buildStatusUrl) {
+		this(name, url, buildStatusUrl, false);
+	}
+
+	private Column() {
+		this("", "", "", true);
 	}
 
 	public String getName() {
@@ -35,5 +45,9 @@ public class Column {
 	@Override
 	public String toString() {
 		return name + " (" +url+ ")";
+	}
+
+	public boolean isEmpty() {
+		return isEmpty;
 	}
 }
