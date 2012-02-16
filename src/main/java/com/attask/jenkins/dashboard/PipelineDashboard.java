@@ -171,6 +171,7 @@ public class PipelineDashboard extends View {
 							TestResultAction testResultAction = build.getAction(TestResultAction.class);
 							if(testResultAction != null) {
 								int failures = testResultAction.getFailCount();
+//								testResult += failures;
 								testResult = "(" + failures + " failures" + ")";
 							}
 							if(!rowDisplayName.isEmpty()) {
