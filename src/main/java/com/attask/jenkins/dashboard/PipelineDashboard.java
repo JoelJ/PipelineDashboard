@@ -23,6 +23,7 @@ import java.util.logging.Logger;
  */
 public class PipelineDashboard extends View {
 	public static Logger LOGGER = Logger.getLogger(PipelineDashboard.class.getSimpleName());
+	public static final String ORB_SIZE = "24x24";
 	public List<String> jobs;
     public String descriptionRegex;
     public int descriptionRegexGroup;
@@ -105,15 +106,19 @@ public class PipelineDashboard extends View {
 	}
 
 	protected Map<String, Build[]> findMatchingBuilds(ItemGroup<TopLevelItem> jenkins, List<String> jobs, String descriptionRegex, int descriptionRegexGroup) {
+		if(jenkins == null || jobs == null || descriptionRegex == null) return Collections.emptyMap();
+		
 		Map<String, Build[]> map = new HashMap<String, Build[]>();
 		for (String jobName : jobs) {
 			try {
 				Job job = (Job) jenkins.getItem(jobName);
+				if(job == null) continue;
 				RunList builds = job.getBuilds();
+				if(builds == null) continue;
 				for (Object buildObj : builds) {
 					Build build = (Build)buildObj;
 					String buildDescription = build.getDescription();
-					if(buildDescription == null || "".equals(buildDescription.trim())) {
+					if(buildDescription == null || buildDescription.trim().isEmpty()) {
 						continue;
 					}
 					buildDescription = buildDescription.replaceAll("(\n|\r)", " "); //normalize whitespace
@@ -137,6 +142,9 @@ public class PipelineDashboard extends View {
 	}
 
 	protected List<Row> generateRowData(String rootUrl, User currentUser, Map<String, Build[]> map, boolean showBuildName, boolean showFailureCount) {
+		if(rootUrl == null) rootUrl = "";
+		if(map == null) return Collections.emptyList();
+		
 		SortedSet<Row> rows = new TreeSet<Row>(new Comparator<Row>() {
 			public int compare(Row row1, Row row2) {
 				if(row1 == row2) return 0;
@@ -162,7 +170,7 @@ public class PipelineDashboard extends View {
 
 						String rowDisplayName = "";
 						
-						if(showBuildName) {
+						if(showBuildName && build.getDisplayName() != null) {
 							rowDisplayName = build.getDisplayName();
 						}
 						
@@ -180,15 +188,16 @@ public class PipelineDashboard extends View {
 							rowDisplayName += testResult;
 						}
 
-						columns.add(new Column(rowDisplayName, build.getUrl(), rootUrl +"/static/832a5f9d/images/24x24/" + build.getBuildStatusUrl()));
+						columns.add(new Column(rowDisplayName, build.getUrl(), rootUrl + "/static/832a5f9d/images/" + ORB_SIZE + "/" + build.getBuildStatusUrl()));
+
+						//noinspection StringEquality
+						if(displayName == rowName && build.getDescription() != null && !build.getDescription().trim().isEmpty()) { // I really do want to do reference equals and not value equals.
+							displayName = build.getDescription();
+							isCulprit = getUserIsCulprit(currentUser, build);
+						}
 					} else {
 						LOGGER.info("\tAdded empty column");
 						columns.add(Column.EMPTY);
-					}
-					//noinspection StringEquality
-					if(displayName == rowName && build.getDescription() != null && !build.getDescription().trim().isEmpty()) { // I really do want to do reference equals and not value equals.
-						displayName = build.getDescription();
-						isCulprit = getUserIsCulprit(currentUser, build);
 					}
 				}
 				if(date == null) date = new Date();
