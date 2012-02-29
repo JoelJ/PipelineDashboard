@@ -50,4 +50,13 @@ public class Row {
 	public boolean isHighlighted() {
 		return highlighted;
 	}
+
+	public boolean isPassed() {
+		for (Column column : columns) {
+			if(!column.isPassed()) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

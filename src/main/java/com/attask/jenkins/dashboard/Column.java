@@ -14,12 +14,14 @@ public class Column {
 	private final String url;
 	private final String buildStatusUrl;
 	private final boolean isEmpty;
+	private final boolean isPassed;
 
 	private Column(String name, String url, String buildStatusUrl, boolean isEmpty) {
 		this.name = name;
 		this.url = url;
 		this.buildStatusUrl = buildStatusUrl;
 		this.isEmpty = isEmpty;
+		this.isPassed = this.buildStatusUrl.contains("blue.png");
 	}
 
 	public Column(String name, String url, String buildStatusUrl) {
@@ -40,6 +42,10 @@ public class Column {
 	
 	public String getBuildStatusUrl() {
 		return buildStatusUrl;
+	}
+
+	public boolean isPassed() {
+		return isPassed;
 	}
 
 	@Override

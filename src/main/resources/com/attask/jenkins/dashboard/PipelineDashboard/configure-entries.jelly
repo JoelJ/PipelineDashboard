@@ -55,4 +55,7 @@
 	<f:entry title="Highlight User's Commits" field="highlightCommitter">
 		<f:checkbox/>
 	</f:entry>
+	<f:entry title="Show last successful build" field="showLastSuccessfulBuild">
+		<f:checkbox/>
+	</f:entry>
 </j:jelly>

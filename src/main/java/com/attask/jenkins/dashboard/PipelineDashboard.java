@@ -33,6 +33,7 @@ public class PipelineDashboard extends View {
 	public boolean showFailureCount;
 	public boolean clickForCommitDetails;
 	public boolean highlightCommitter;
+	public boolean showLastSuccessfulBuild;
 
 	@DataBoundConstructor
 	public PipelineDashboard(String name) {
@@ -84,6 +85,7 @@ public class PipelineDashboard extends View {
 		this.showFailureCount = "on".equals(request.getParameter("_.showFailureCount"));
 		this.clickForCommitDetails = "on".equals(request.getParameter("_.clickForCommitDetails"));
 		this.highlightCommitter = "on".equals(request.getParameter("_.highlightCommitter"));
+		this.showLastSuccessfulBuild = "on".equals(request.getParameter("_.showLastSuccessfulBuild"));
 	}
 
 	/**
@@ -92,15 +94,15 @@ public class PipelineDashboard extends View {
 	 * 			regex provided. The list is sorted by build date starting with the most recent.
 	 */
 	@SuppressWarnings("UnusedDeclaration")
-	public List<Row> getDisplayRows() {
+	public Table getDisplayRows() {
 		LOGGER.info("getDisplayRows starting");
 
 		Jenkins jenkins = Jenkins.getInstance();
 		Map<String, Build[]> map = findMatchingBuilds(jenkins, jobs, descriptionRegex, descriptionRegexGroup);
 		LOGGER.info("map size: " + map.size());
 
-		List<Row> result = generateRowData(jenkins.getRootUrl(), User.current(), map, this.showBuildName, this.showFailureCount);
-		LOGGER.info("result size: " + result.size());
+		Table result = generateRowData(jenkins.getRootUrl(), User.current(), map, this.showBuildName, this.showFailureCount);
+		LOGGER.info("result size: " + result.getRows().size());
 
 		return result;
 	}
@@ -141,9 +143,9 @@ public class PipelineDashboard extends View {
 		return map;
 	}
 
-	protected List<Row> generateRowData(String rootUrl, User currentUser, Map<String, Build[]> map, boolean showBuildName, boolean showFailureCount) {
+	protected Table generateRowData(String rootUrl, User currentUser, Map<String, Build[]> map, boolean showBuildName, boolean showFailureCount) {
 		if(rootUrl == null) rootUrl = "";
-		if(map == null) return Collections.emptyList();
+		if(map == null) return Table.EMPTY_TABLE;
 		
 		SortedSet<Row> rows = new TreeSet<Row>(new Comparator<Row>() {
 			public int compare(Row row1, Row row2) {
@@ -212,15 +214,21 @@ public class PipelineDashboard extends View {
 		}
 		List<Row> result = new LinkedList<Row>();
 
+		Row lastSuccessfulRow = null;
+
 		int i = 0;
 		for (Row row : rows) {
+			if(lastSuccessfulRow == null && row.isPassed()) {
+				lastSuccessfulRow = row;
+			}
+
 			result.add(row);
 			i++;
 			if(i >= numberDisplayed || i >= rows.size()) {
 				break;
 			}
 		}
-		return result;
+		return new Table(result, lastSuccessfulRow);
 	}
 
 	private boolean getUserIsCulprit(User currentUser, Build build) {
