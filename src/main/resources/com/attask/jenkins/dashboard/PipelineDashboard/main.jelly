@@ -64,56 +64,58 @@
 	<j:set var="currentView" value="${it}"/>
 	<st:include page="viewTabs.jelly" it="${it.owner.viewsTabBar}"/>
 
-	<table id="projectstatus" class="pane bigtable">
-		<tr style="border-top: 0px;">
-			<th>${it.firstColumnName}</th>
-			<j:forEach items="${it.jobs}" var="jobName">
-				<th>
-					<a class="sortheader" href="job/${jobName}">${jobName}</a>
-				</th>
+	<div id="PipelineDashboard">
+		<table id="projectstatus" class="pane bigtable">
+			<tr style="border-top: 0px;">
+				<th>${it.firstColumnName}</th>
+				<j:forEach items="${it.jobs}" var="jobName">
+					<th>
+						<a class="sortheader" href="job/${jobName}">${jobName}</a>
+					</th>
+				</j:forEach>
+			</tr>
+			<j:set var="table" value="${it.getDisplayRows()}"/>
+
+			<!--Display the last successful row-->
+
+			<j:if test="${table.lastSuccessfulRow != null}">
+				<tr id="row-${table.lastSuccessfulRow.getName()}" class="lastSuccessfulRow ${table.lastSuccessfulRow.isHighlighted() ? 'highlighted' : ''}">
+					<td class="custom">${table.lastSuccessfulRow.getDisplayName()}</td>
+					<j:forEach items="${table.lastSuccessfulRow.getColumns()}" var="column">
+						<td class="build" url="${column.getUrl()}">
+							<j:if test="${!column.isEmpty()}">
+								<a href="${column.getUrl()}testReport">
+									<img src="${column.getBuildStatusUrl()}"/>
+									<span>${column.getName()}</span>
+								</a>
+							</j:if>
+							<j:if test="${column.isEmpty()}">
+								<span>?</span>
+							</j:if>
+						</td>
+					</j:forEach>
+				</tr>
+			</j:if>
+
+
+			<j:forEach items="${table.rows}" var="row" indexVar="i">
+				<tr id="row-${row.getName()}" class="${row.isHighlighted() ? 'highlighted' : ''}">
+					<td class="custom">${row.getDisplayName()}</td>
+					<j:forEach items="${row.getColumns()}" var="column">
+						<td class="build" url="${column.getUrl()}">
+							<j:if test="${!column.isEmpty()}">
+								<a href="${column.getUrl()}testReport">
+									<img src="${column.getBuildStatusUrl()}"/>
+									<span>${column.getName()}</span>
+								</a>
+							</j:if>
+							<j:if test="${column.isEmpty()}">
+								<span>?</span>
+							</j:if>
+						</td>
+					</j:forEach>
+				</tr>
 			</j:forEach>
-		</tr>
-		<j:set var="table" value="${it.getDisplayRows()}"/>
-
-		<!--Display the last successful row-->
-
-		<j:if test="${table.lastSuccessfulRow != null}">
-			<tr id="row-${table.lastSuccessfulRow.getName()}" class="lastSuccessfulRow ${table.lastSuccessfulRow.isHighlighted() ? 'highlighted' : ''}">
-				<td class="custom">${table.lastSuccessfulRow.getDisplayName()}</td>
-				<j:forEach items="${table.lastSuccessfulRow.getColumns()}" var="column">
-					<td class="build" url="${column.getUrl()}">
-						<j:if test="${!column.isEmpty()}">
-							<a href="${column.getUrl()}testReport">
-								<img src="${column.getBuildStatusUrl()}"/>
-								<span>${column.getName()}</span>
-							</a>
-						</j:if>
-						<j:if test="${column.isEmpty()}">
-							<span>?</span>
-						</j:if>
-					</td>
-				</j:forEach>
-			</tr>
-		</j:if>
-
-
-		<j:forEach items="${table.rows}" var="row" indexVar="i">
-			<tr id="row-${row.getName()}" class="${row.isHighlighted() ? 'highlighted' : ''}">
-				<td class="custom">${row.getDisplayName()}</td>
-				<j:forEach items="${row.getColumns()}" var="column">
-					<td class="build" url="${column.getUrl()}">
-						<j:if test="${!column.isEmpty()}">
-							<a href="${column.getUrl()}testReport">
-								<img src="${column.getBuildStatusUrl()}"/>
-								<span>${column.getName()}</span>
-							</a>
-						</j:if>
-						<j:if test="${column.isEmpty()}">
-							<span>?</span>
-						</j:if>
-					</td>
-				</j:forEach>
-			</tr>
-		</j:forEach>
-	</table>
+		</table>
+	</div>
 </j:jelly>

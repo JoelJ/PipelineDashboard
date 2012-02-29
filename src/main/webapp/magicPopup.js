@@ -3,6 +3,9 @@ Event.observe(window, 'load', function() {
 		it.observe("click", openPopup);
 		document.body.observe("click", closePopup);
 	});
+
+//	updateView();
+	window.setInterval(updateView, 5000);
 });
 
 var openPopup = (function(e){
@@ -63,3 +66,56 @@ var showContent = (function(element, url, x, y) {
 		}
 	});
 });
+
+var updateView = (function() {
+	var url = document.URL;
+	new Ajax.Request(url, {
+		method: 'get',
+		onSuccess: function(transport) {
+			var resultBody = transport.response;
+
+			var myDiv = $(document.createElement("div"));
+			myDiv.innerHTML = resultBody;
+
+			var newPipelineDashboard = myDiv.getElementsBySelector('#PipelineDashboard');
+			console.log(newPipelineDashboard);
+			if(newPipelineDashboard.length > 0) {
+				var oldPipelineDashboard = $('PipelineDashboard');
+				console.log(oldPipelineDashboard);
+				oldPipelineDashboard.innerHTML = newPipelineDashboard[0].innerHTML;
+			}
+		},
+		onError: function(transport) {
+			console.log(transport);
+		}
+	});
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
