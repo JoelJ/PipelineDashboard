@@ -81,7 +81,7 @@
 
 			<!--Display the last successful row-->
 
-			<j:if test="${table.lastSuccessfulRow != null}">
+			<j:if test="${it.showLastSuccessfulBuild and table.lastSuccessfulRow != null}">
 				<tr id="row-${table.lastSuccessfulRow.getName()}" class="lastSuccessfulRow ${table.lastSuccessfulRow.isHighlighted() ? 'highlighted' : ''}">
 					<td class="custom">${table.lastSuccessfulRow.getDisplayName()}</td>
 					<j:forEach items="${table.lastSuccessfulRow.getColumns()}" var="column">
