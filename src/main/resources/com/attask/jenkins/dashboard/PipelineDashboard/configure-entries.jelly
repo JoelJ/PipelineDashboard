@@ -58,4 +58,7 @@
 	<f:entry title="Show last successful build" field="showLastSuccessfulBuild">
 		<f:checkbox/>
 	</f:entry>
+	<f:entry title="Auto refresh" field="autoRefresh">
+		<f:checkbox/>
+	</f:entry>
 </j:jelly>

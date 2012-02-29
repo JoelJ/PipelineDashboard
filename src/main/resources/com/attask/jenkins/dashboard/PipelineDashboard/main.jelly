@@ -56,7 +56,10 @@
 	</style>
 
 	<j:if test="${it.clickForCommitDetails}">
-		<script type="text/javascript" src="${Jenkins.getInstance().getRootUrl()}/plugin/PipelineDashboard/magicPopup.js"></script>
+		<script type="text/javascript" src="${rootURL}/plugin/PipelineDashboard/magicPopup.js"></script>
+	</j:if>
+	<j:if test="${it.autoRefresh}">
+		<script type="text/javascript" src="${rootURL}/plugin/PipelineDashboard/autoRefresh.js"></script>
 	</j:if>
 
 
