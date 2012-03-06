@@ -1,9 +1,13 @@
 Event.observe(window, 'load', function() {
+	initMagicPopup();
+	document.body.observe("click", closePopup);
+});
+
+var initMagicPopup = function() {
 	$$(".custom").each(function(it) {
 		it.observe("click", openPopup);
-		document.body.observe("click", closePopup);
 	});
-});
+};
 
 var openPopup = (function(e){
 	var div;

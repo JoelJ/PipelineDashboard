@@ -17,6 +17,10 @@ var updateView = (function() {
 				var oldPipelineDashboard = $('PipelineDashboard');
 				oldPipelineDashboard.innerHTML = newPipelineDashboard[0].innerHTML;
 			}
+
+			if(window.initMagicPopup) {
+				window.initMagicPopup();
+			}
 		},
 		onError: function(transport) {
 			console.log(transport);
