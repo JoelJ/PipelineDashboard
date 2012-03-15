@@ -1,11 +1,12 @@
 Event.observe(window, 'load', function() {
-	window.setInterval(updateView, 5000);
+	window.setInterval(updateView, 10000);
 });
 
 var updateView = (function() {
 	var url = document.URL;
 	new Ajax.Request(url, {
 		method: 'get',
+		evalJS: 'false',
 		onSuccess: function(transport) {
 			var resultBody = transport.response;
 
