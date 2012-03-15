@@ -97,14 +97,14 @@ public class PipelineDashboard extends View {
 	 */
 	@SuppressWarnings("UnusedDeclaration")
 	public Table getDisplayRows() {
-		LOGGER.info("getDisplayRows starting");
+//		LOGGER.info("getDisplayRows starting");
 
 		Jenkins jenkins = Jenkins.getInstance();
 		Map<String, Build[]> map = findMatchingBuilds(jenkins, jobs, descriptionRegex, descriptionRegexGroup);
-		LOGGER.info("map size: " + map.size());
+//		LOGGER.info("map size: " + map.size());
 
 		Table result = generateRowData(jenkins.getRootUrl(), User.current(), map, this.showBuildName, this.showFailureCount);
-		LOGGER.info("result size: " + result.getRows().size());
+//		LOGGER.info("result size: " + result.getRows().size());
 
 		return result;
 	}
@@ -160,7 +160,7 @@ public class PipelineDashboard extends View {
 
 		for (String rowName : map.keySet()) {
 			try {
-				LOGGER.info("Row " + rowName);
+//				LOGGER.info("Row " + rowName);
 				Build[] builds = map.get(rowName);
 				List<Column> columns = new LinkedList<Column>();
 				Date date = null;
@@ -169,7 +169,7 @@ public class PipelineDashboard extends View {
 
 				for (Build build : builds) {
 					if(build != null) {
-						LOGGER.info("\t" + build.getDisplayName() + " " + build.getDescription());
+//						LOGGER.info("\t" + build.getDisplayName() + " " + build.getDescription());
 						if(date == null) date = build.getTime();
 
 						String rowDisplayName = "";
@@ -197,10 +197,10 @@ public class PipelineDashboard extends View {
 						//noinspection StringEquality
 						if(displayName == rowName && build.getDescription() != null && !build.getDescription().trim().isEmpty()) { // I really do want to do reference equals and not value equals.
 							displayName = build.getDescription();
-							isCulprit = getUserIsCulprit(currentUser, build);
+							isCulprit = getUserIsCommitter(currentUser, build);
 						}
 					} else {
-						LOGGER.info("\tAdded empty column");
+//						LOGGER.info("\tAdded empty column");
 						columns.add(Column.EMPTY);
 					}
 				}
@@ -233,7 +233,7 @@ public class PipelineDashboard extends View {
 		return new Table(result, lastSuccessfulRow);
 	}
 
-	private boolean getUserIsCulprit(User currentUser, Build build) {
+	private boolean getUserIsCommitter(User currentUser, Build build) {
 		if(currentUser == null || build == null) return false;
 
 		String description = build.getDescription();
