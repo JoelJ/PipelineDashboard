@@ -2,6 +2,7 @@ package com.attask.jenkins.dashboard;
 
 import hudson.Extension;
 import hudson.model.*;
+import hudson.scm.ChangeLogSet;
 import hudson.tasks.junit.TestResultAction;
 import hudson.util.RunList;
 import jenkins.model.Jenkins;
@@ -166,11 +167,15 @@ public class PipelineDashboard extends View {
 				Date date = null;
 				String displayName = rowName;
 				boolean isCulprit = false;
+				boolean hasMultiple = false;
 
 				for (Build build : builds) {
 					if(build != null) {
 //						LOGGER.info("\t" + build.getDisplayName() + " " + build.getDescription());
-						if(date == null) date = build.getTime();
+						if(date == null) {
+							date = build.getTime();
+							hasMultiple = !build.getChangeSet().isEmptySet() && build.getChangeSet().getItems().length > 1;
+						}
 
 						String rowDisplayName = "";
 						
@@ -206,7 +211,7 @@ public class PipelineDashboard extends View {
 				}
 				if(date == null) date = new Date();
 
-				rows.add(new Row(date, rowName, displayName, columns, isCulprit));
+				rows.add(new Row(date, rowName, displayName, columns, isCulprit, hasMultiple));
 			} catch (Throwable t) {
 				LOGGER.severe("Error while generating the list: " + t.getClass().getCanonicalName() + t.getMessage() + "\n" + join(Arrays.asList(t.getStackTrace()), "\n"));
 				if(t.getCause() != null) {
@@ -242,7 +247,8 @@ public class PipelineDashboard extends View {
 		}
 
 		//noinspection unchecked
-		for (User culprit : (Set<User>)build.getCulprits()) {
+		for (ChangeLogSet.Entry change : build.getChangeSet()) {
+			User culprit = change.getAuthor();
 			if((culprit.getId() != null && culprit.getId().equals(currentUser.getId())) || (culprit.getFullName() != null && culprit.getFullName().equals(currentUser.getFullName()))) {
 				return true;
 			}
