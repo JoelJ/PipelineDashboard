@@ -40,6 +40,12 @@
 			background-color: #BEB !important;
 			border-bottom: 3px double #BBB !important;
 		}
+
+		img#multipleCommitters {
+			float: left;
+			width: 16px;
+			height: 16px;
+		}
 <!--
 		.build a {
 			text-decoration: none;
@@ -105,7 +111,7 @@
 				<tr id="row-${row.getName()}" class="${row.isHighlighted() ? 'highlighted' : ''}">
 					<td class="custom">
 						<j:if test="${row.getHasMultiple()}">
-							<img src="${rootURL}/plugin/PipelineDashboard/multiple_committers.png"></img>
+							<img id="multipleCommitters" src="${rootURL}/plugin/PipelineDashboard/multiple_committers.png" />
 						</j:if>
 						${row.getDisplayName()}
 					</td>
