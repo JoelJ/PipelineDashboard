@@ -16,14 +16,16 @@ public class Row {
 	private final String displayName;
 	private final List<Column> columns;
 	private final boolean highlighted;
+	private final boolean hasMultiple;
 
-	public Row(Date date, String name, String displayName, List<Column> columns, boolean currentUser) {
+	public Row(Date date, String name, String displayName, List<Column> columns, boolean currentUser, boolean hasMultiple) {
 		if(date == null) throw new RuntimeException("date cannot be null");
 		this.date = date;
 		this.name = name;
 		this.displayName = displayName;
 		this.columns = columns;
 		this.highlighted = currentUser;
+		this.hasMultiple = hasMultiple;
 	}
 	
 	public Date getDate() {
@@ -58,5 +60,9 @@ public class Row {
 			}
 		}
 		return true;
+	}
+
+	public boolean getHasMultiple() {
+		return hasMultiple;
 	}
 }

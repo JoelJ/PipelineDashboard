@@ -103,7 +103,12 @@
 
 			<j:forEach items="${table.rows}" var="row" indexVar="i">
 				<tr id="row-${row.getName()}" class="${row.isHighlighted() ? 'highlighted' : ''}">
-					<td class="custom">${row.getDisplayName()}</td>
+					<td class="custom">
+						<j:if test="${row.getHasMultiple()}">
+							<img src="${rootURL}/plugin/PipelineDashboard/multiple_committers.png"></img>
+						</j:if>
+						${row.getDisplayName()}
+					</td>
 					<j:forEach items="${row.getColumns()}" var="column">
 						<td class="build" url="${column.getUrl()}">
 							<j:if test="${!column.isEmpty()}">
