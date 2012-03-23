@@ -247,7 +247,8 @@ public class PipelineDashboard extends View {
 		}
 
 		//noinspection unchecked
-		for (ChangeLogSet.Entry change : build.getChangeSet()) {
+		for (Object changeO : build.getChangeSet()) {
+			ChangeLogSet.Entry change = (ChangeLogSet.Entry)changeO;
 			User culprit = change.getAuthor();
 			if((culprit.getId() != null && culprit.getId().equals(currentUser.getId())) || (culprit.getFullName() != null && culprit.getFullName().equals(currentUser.getFullName()))) {
 				return true;
