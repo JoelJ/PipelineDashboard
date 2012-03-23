@@ -43,6 +43,7 @@
 
 		img#multipleCommitters {
 			float: left;
+			padding-top: 6px;
 			width: 16px;
 			height: 16px;
 		}
