@@ -56,6 +56,7 @@ var showContent = (function(element, url, x, y) {
 				html += '<div class="commit">';
 				html += 	'<div>Revision: <span class="revision">'+it.id+'</span></div>';
 				html += 	'<div>Author: <span class="author">'+it.author.fullName+'</span></div>';
+				html += 	'<div>Date: "<span class="comment">'+it.date +"</span></div>";
 				html += 	'<div>Comment: "<span class="comment">'+it.comment.trim().replace('\n', '<br/>')+'</span>"</div>';
 				html += '</div>';
 			});
