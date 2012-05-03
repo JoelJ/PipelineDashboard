@@ -42,7 +42,7 @@ var showContent = (function(element, url, x, y) {
 	new Ajax.Request(url, {
 		method:'get',
 		onSuccess:function (transport) {
-			var json = transport.response;
+			var json = transport.responseText;
 			var result = eval('('+json+')');
 
 			var changeSet = result.changeSet.items;
