@@ -55,7 +55,7 @@ public class Row {
 
 	public boolean isPassed() {
 		for (Column column : columns) {
-			if(!column.isEmpty() && !column.isPassed()) {
+			if(column.isEmpty() || !column.isPassed()) {
 				return false;
 			}
 		}
