@@ -101,7 +101,7 @@ public class PipelineDashboard extends View {
 //		LOGGER.info("getDisplayRows starting");
 
 		Jenkins jenkins = Jenkins.getInstance();
-		Map<String, Build[]> map = findMatchingBuilds(jenkins, jobs, descriptionRegex, descriptionRegexGroup);
+		Map<String, Run[]> map = findMatchingBuilds(jenkins, jobs, descriptionRegex, descriptionRegexGroup);
 //		LOGGER.info("map size: " + map.size());
 
 		Table result = generateRowData(jenkins.getRootUrl(), User.current(), map, this.showBuildName, this.showFailureCount);
@@ -110,10 +110,10 @@ public class PipelineDashboard extends View {
 		return result;
 	}
 
-	protected Map<String, Build[]> findMatchingBuilds(ItemGroup<TopLevelItem> jenkins, List<String> jobs, String descriptionRegex, int descriptionRegexGroup) {
+	protected Map<String, Run[]> findMatchingBuilds(ItemGroup<TopLevelItem> jenkins, List<String> jobs, String descriptionRegex, int descriptionRegexGroup) {
 		if(jenkins == null || jobs == null || descriptionRegex == null) return Collections.emptyMap();
 		
-		Map<String, Build[]> map = new HashMap<String, Build[]>();
+		Map<String, Run[]> map = new HashMap<String, Run[]>();
 		for (String jobName : jobs) {
 			try {
 				Job job = (Job) jenkins.getItem(jobName);
@@ -121,7 +121,7 @@ public class PipelineDashboard extends View {
 				RunList builds = job.getBuilds();
 				if(builds == null) continue;
 				for (Object buildObj : builds) {
-					Build build = (Build)buildObj;
+					Run build = (Run)buildObj;
 					String buildDescription = build.getDescription();
 					if(buildDescription == null || buildDescription.trim().isEmpty()) {
 						continue;
@@ -131,7 +131,7 @@ public class PipelineDashboard extends View {
 					if(buildDescription.matches(descriptionRegex)) {
 						String key = buildDescription.replaceFirst(descriptionRegex, "$" + descriptionRegexGroup);
 						if(!map.containsKey(key)) {
-							map.put(key, new Build[jobs.size()]);
+							map.put(key, new Run[jobs.size()]);
 						}
 						map.get(key)[jobs.indexOf(jobName)] = build;
 					}
@@ -146,7 +146,7 @@ public class PipelineDashboard extends View {
 		return map;
 	}
 
-	protected Table generateRowData(String rootUrl, User currentUser, Map<String, Build[]> map, boolean showBuildName, boolean showFailureCount) {
+	protected Table generateRowData(String rootUrl, User currentUser, Map<String, Run[]> map, boolean showBuildName, boolean showFailureCount) {
 		if(rootUrl == null) rootUrl = "";
 		if(map == null) return Table.EMPTY_TABLE;
 		
@@ -162,19 +162,22 @@ public class PipelineDashboard extends View {
 		for (String rowName : map.keySet()) {
 			try {
 //				LOGGER.info("Row " + rowName);
-				Build[] builds = map.get(rowName);
+				Run[] builds = map.get(rowName);
 				List<Column> columns = new LinkedList<Column>();
 				Date date = null;
 				String displayName = rowName;
 				boolean isCulprit = false;
 				boolean hasMultiple = false;
 
-				for (Build build : builds) {
+				for (Run build : builds) {
 					if(build != null) {
 //						LOGGER.info("\t" + build.getDisplayName() + " " + build.getDescription());
 						if(date == null) {
 							date = build.getTime();
-							hasMultiple = !build.getChangeSet().isEmptySet() && build.getChangeSet().getItems().length > 1;
+							if(build instanceof AbstractBuild) {
+								AbstractBuild abstractBuild = (AbstractBuild) build;
+								hasMultiple = !abstractBuild.getChangeSet().isEmptySet() && abstractBuild.getChangeSet().getItems().length > 1;
+							}
 						}
 
 						String rowDisplayName = "";
@@ -238,7 +241,7 @@ public class PipelineDashboard extends View {
 		return new Table(result, lastSuccessfulRow);
 	}
 
-	private boolean getUserIsCommitter(User currentUser, Build build) {
+	private boolean getUserIsCommitter(User currentUser, Run build) {
 		if(currentUser == null || build == null) return false;
 
 		String description = build.getDescription();
@@ -247,11 +250,13 @@ public class PipelineDashboard extends View {
 		}
 
 		//noinspection unchecked
-		for (Object changeO : build.getChangeSet()) {
-			ChangeLogSet.Entry change = (ChangeLogSet.Entry)changeO;
-			User culprit = change.getAuthor();
-			if((culprit.getId() != null && culprit.getId().equals(currentUser.getId())) || (culprit.getFullName() != null && culprit.getFullName().equals(currentUser.getFullName()))) {
-				return true;
+		if(build instanceof AbstractBuild) {
+			for (Object changeObj : ((AbstractBuild)build).getChangeSet()) {
+				ChangeLogSet.Entry change = (ChangeLogSet.Entry)changeObj;
+				User culprit = change.getAuthor();
+				if((culprit.getId() != null && culprit.getId().equals(currentUser.getId())) || (culprit.getFullName() != null && culprit.getFullName().equals(currentUser.getFullName()))) {
+					return true;
+				}
 			}
 		}
 		
