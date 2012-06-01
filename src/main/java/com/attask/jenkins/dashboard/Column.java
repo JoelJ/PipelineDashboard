@@ -11,29 +11,35 @@ public class Column {
 	public static Column EMPTY = new Column();
 
 	private final String name;
+	private final int failureCount;
 	private final String url;
 	private final String buildStatusUrl;
 	private final boolean isEmpty;
 	private final boolean isPassed;
 
-	private Column(String name, String url, String buildStatusUrl, boolean isEmpty) {
+	private Column(String name, int failureCount, String url, String buildStatusUrl, boolean isEmpty) {
 		this.name = name;
+		this.failureCount = failureCount;
 		this.url = url;
 		this.buildStatusUrl = buildStatusUrl;
 		this.isEmpty = isEmpty;
 		this.isPassed = this.buildStatusUrl.contains("blue.png");
 	}
 
-	public Column(String name, String url, String buildStatusUrl) {
-		this(name, url, buildStatusUrl, false);
+	public Column(String name, int failureCount, String url, String buildStatusUrl) {
+		this(name, failureCount, url, buildStatusUrl, false);
 	}
 
 	private Column() {
-		this("", "", "", true);
+		this("", -1, "", "", true);
 	}
 
 	public String getName() {
 		return name;
+	}
+
+	public int getFailureCount() {
+		return failureCount;
 	}
 
 	public String getUrl() {

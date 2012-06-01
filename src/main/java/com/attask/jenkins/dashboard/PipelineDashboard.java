@@ -186,22 +186,18 @@ public class PipelineDashboard extends View {
 						if(showBuildName && build.getDisplayName() != null) {
 							rowDisplayName = build.getDisplayName();
 						}
-						
-						if(showFailureCount) {
-							String testResult = "";
+
+						//Only show the count if it's Successful or Unstable
+						// (Successful because of the Status override plugin.)
+						int failureCount = -1;
+						if(showFailureCount && (build.getResult() == Result.SUCCESS || build.getResult() == Result.UNSTABLE)) {
 							AbstractTestResultAction testResultAction = build.getAction(AbstractTestResultAction.class);
 							if(testResultAction != null) {
-								int failures = testResultAction.getFailCount();
-//								testResult += failures;
-								testResult = "(" + failures + " failures" + ")";
+								failureCount = testResultAction.getFailCount();
 							}
-							if(!rowDisplayName.isEmpty()) {
-								rowDisplayName += " ";
-							}
-							rowDisplayName += testResult;
 						}
 
-						columns.add(new Column(rowDisplayName, build.getUrl(), rootUrl + "/static/832a5f9d/images/" + ORB_SIZE + "/" + build.getBuildStatusUrl()));
+						columns.add(new Column(rowDisplayName, failureCount, build.getUrl(), rootUrl + "/static/832a5f9d/images/" + ORB_SIZE + "/" + build.getBuildStatusUrl()));
 
 						//noinspection StringEquality
 						if(displayName == rowName && build.getDescription() != null && !build.getDescription().trim().isEmpty()) { // I really do want to do reference equals and not value equals.
