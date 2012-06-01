@@ -4,6 +4,7 @@ import hudson.Extension;
 import hudson.model.*;
 import hudson.scm.ChangeLogSet;
 import hudson.tasks.junit.TestResultAction;
+import hudson.tasks.test.AbstractTestResultAction;
 import hudson.util.RunList;
 import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -188,7 +189,7 @@ public class PipelineDashboard extends View {
 						
 						if(showFailureCount) {
 							String testResult = "";
-							TestResultAction testResultAction = build.getAction(TestResultAction.class);
+							AbstractTestResultAction testResultAction = build.getAction(AbstractTestResultAction.class);
 							if(testResultAction != null) {
 								int failures = testResultAction.getFailCount();
 //								testResult += failures;
