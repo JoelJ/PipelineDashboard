@@ -48,13 +48,20 @@
 			height: 16px;
 		}
 
-		.build .name {
-			padding-right: 2px;
+		.build .status {
+			float: left;
+			margin-top: 3px;
+			margin-right: 5px;
 		}
 
-		.build .failureCount {
-			padding-left: 2px;
+		.build>span {
+			float: left;
 		}
+
+		.build>span>a {
+			display: block;
+		}
+
 <!--
 		.build a {
 			text-decoration: none;
