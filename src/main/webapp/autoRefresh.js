@@ -3,6 +3,15 @@ Event.observe(window, 'load', function() {
 });
 
 var updateView = (function() {
+	if(!window.isFocused) {
+		console.log('not auto-updating: window is not focused');
+		return;
+	}
+	console.log('auto-updating: window is focused');
+	update();
+});
+
+function update() {
 	var url = document.URL;
 	new Ajax.Request(url, {
 		method: 'get',
@@ -27,4 +36,13 @@ var updateView = (function() {
 			console.log(transport);
 		}
 	});
+}
+
+Event.observe(window, 'focus', function() {
+	window.isFocused = true;
+	update();
+});
+
+Event.observe(window, 'blur', function() {
+	window.isFocused = false;
 });
