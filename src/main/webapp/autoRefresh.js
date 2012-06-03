@@ -1,14 +1,6 @@
+var intervalID;
 Event.observe(window, 'load', function() {
-	window.setInterval(updateView, 10000);
-});
-
-var updateView = (function() {
-	if(!window.isFocused) {
-		console.log('not auto-updating: window is not focused');
-		return;
-	}
-	console.log('auto-updating: window is focused');
-	update();
+	intervalID = window.setInterval(update, 10000);
 });
 
 function update() {
@@ -39,10 +31,12 @@ function update() {
 }
 
 Event.observe(window, 'focus', function() {
-	window.isFocused = true;
+	window.clearInterval(intervalID);
+	intervalID = window.setInterval(update, 10000);
 	update();
 });
 
 Event.observe(window, 'blur', function() {
-	window.isFocused = false;
+	window.clearInterval(intervalID);
+	intervalID = window.setInterval(update, 20000);
 });
