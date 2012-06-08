@@ -8,8 +8,7 @@ package com.attask.jenkins.dashboard;
  * Time: 10:29 AM
  */
 public class Column {
-	public static Column EMPTY = new Column();
-
+	private final JobColumn columnHeader;
 	private final String name;
 	private final int failureCount;
 	private final String url;
@@ -17,7 +16,12 @@ public class Column {
 	private final boolean isEmpty;
 	private final boolean isPassed;
 
-	private Column(String name, int failureCount, String url, String buildStatusUrl, boolean isEmpty) {
+	public static Column getEmpty(JobColumn jobHeader) {
+		return new Column(jobHeader);
+	}
+
+	private Column(JobColumn columnHeader, String name, int failureCount, String url, String buildStatusUrl, boolean isEmpty) {
+		this.columnHeader = columnHeader;
 		this.name = name;
 		this.failureCount = failureCount;
 		this.url = url;
@@ -26,12 +30,16 @@ public class Column {
 		this.isPassed = this.buildStatusUrl.contains("blue.png");
 	}
 
-	public Column(String name, int failureCount, String url, String buildStatusUrl) {
-		this(name, failureCount, url, buildStatusUrl, false);
+	public Column(JobColumn columnHeader, String name, int failureCount, String url, String buildStatusUrl) {
+		this(columnHeader, name, failureCount, url, buildStatusUrl, false);
 	}
 
-	private Column() {
-		this("", -1, "", "", true);
+	private Column(JobColumn column) {
+		this(column, "", -1, "", "", true);
+	}
+
+	public JobColumn getColumnHeader() {
+		return columnHeader;
 	}
 
 	public String getName() {

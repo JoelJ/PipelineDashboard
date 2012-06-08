@@ -53,9 +53,13 @@ public class Row {
 		return highlighted;
 	}
 
-	public boolean isPassed() {
+	public boolean isPassed(List<JobColumn> jobColumns) {
 		for (Column column : columns) {
-			if(column.isEmpty() || !column.isPassed()) {
+			if(column.isEmpty()) {
+				if(column.getColumnHeader().isRequired()) {
+					return false;
+				}
+			} else if(!column.isPassed()) {
 				return false;
 			}
 		}

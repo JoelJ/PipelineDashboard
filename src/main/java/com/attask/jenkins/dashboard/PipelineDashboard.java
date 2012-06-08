@@ -165,8 +165,14 @@ public class PipelineDashboard extends View {
 				boolean isCulprit = false;
 				boolean hasMultiple = false;
 
-				for (Run build : builds) {
+				for(int i = 0; i < builds.length; i++) {
+					Run build = builds[i];
+					JobColumn columnHeader = jobColumns.get(i);
+
 					if(build != null) {
+						if(!build.getParent().getName().equals(columnHeader.getJobName())) {
+							throw new RuntimeException("Got out of sync");
+						}
 //						LOGGER.info("\t" + build.getDisplayName() + " " + build.getDescription());
 						if(date == null) {
 							date = build.getTime();
@@ -192,7 +198,8 @@ public class PipelineDashboard extends View {
 							}
 						}
 
-						columns.add(new Column(rowDisplayName, failureCount, build.getUrl(), rootUrl + "/static/832a5f9d/images/" + ORB_SIZE + "/" + build.getBuildStatusUrl()));
+
+						columns.add(new Column(columnHeader, rowDisplayName, failureCount, build.getUrl(), rootUrl + "/static/832a5f9d/images/" + ORB_SIZE + "/" + build.getBuildStatusUrl()));
 
 						//noinspection StringEquality
 						if(displayName == rowName && build.getDescription() != null && !build.getDescription().trim().isEmpty()) { // I really do want to do reference equals and not value equals.
@@ -201,7 +208,7 @@ public class PipelineDashboard extends View {
 						}
 					} else {
 //						LOGGER.info("\tAdded empty column");
-						columns.add(Column.EMPTY);
+						columns.add(Column.getEmpty(columnHeader));
 					}
 				}
 				if(date == null) date = new Date();
@@ -220,7 +227,7 @@ public class PipelineDashboard extends View {
 
 		int i = 0;
 		for (Row row : rows) {
-			if(lastSuccessfulRow == null && row.isPassed()) {
+			if(lastSuccessfulRow == null && row.isPassed(jobColumns)) {
 				lastSuccessfulRow = row;
 			}
 

@@ -97,6 +97,18 @@ public class JobColumn extends AbstractDescribableImpl<JobColumn> {
 		return getJobName() + "(" + getAlias() + ")";
 	}
 
+	public static JobColumn findColumnHeader(String projectName, Collection<JobColumn> jobColumns) {
+		JobColumn columnHeader = null;
+		for (JobColumn jobColumn : jobColumns) {
+			if(projectName.equals(jobColumn.getJobName())) {
+				columnHeader = jobColumn;
+				break;
+			}
+		}
+		assert columnHeader != null : "column header cannot be null;";
+		return columnHeader;
+	}
+
 	@Extension
 	public static final class DescriptorImpl extends Descriptor<JobColumn> {
 		@Override
