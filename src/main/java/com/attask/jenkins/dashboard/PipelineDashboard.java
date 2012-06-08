@@ -93,7 +93,7 @@ public class PipelineDashboard extends View {
 	 * 			regex provided. The list is sorted by build date starting with the most recent.
 	 */
 	@SuppressWarnings("UnusedDeclaration")
-	public Table getDisplayRows() {
+	public Table getDisplayRows() { //show hidden is from a request parameter. Hence the string rather than boolean
 //		LOGGER.info("getDisplayRows starting");
 
 		Jenkins jenkins = Jenkins.getInstance();

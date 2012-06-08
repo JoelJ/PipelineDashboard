@@ -62,6 +62,11 @@
 			display: block;
 		}
 
+		.hide-default-hidden td.hidden, .hide-default-hidden th.hidden {
+			display: none;
+		}
+
+
 <!--
 		.build a {
 			text-decoration: none;
@@ -77,6 +82,23 @@
 		}-->
 	</style>
 
+	<script>
+		Event.observe(window, 'load', function() {
+			$('showHidden').observe('click', function(event) {
+				event.preventDefault();
+
+				if($('PipelineDashboard').toggleClassName('hide-default-hidden').hasClassName('hide-default-hidden')) {
+					event.target.innerHTML = "Show Hidden";
+				} else {
+					event.target.innerHTML = "Hide Hidden";
+				}
+
+
+				return false;
+			});
+		});
+	</script>
+
 	<j:if test="${it.clickForCommitDetails}">
 		<script type="text/javascript" src="${rootURL}/plugin/PipelineDashboard/magicPopup.js"></script>
 	</j:if>
@@ -89,13 +111,14 @@
 	<j:set var="currentView" value="${it}"/>
 	<st:include page="viewTabs.jelly" it="${it.owner.viewsTabBar}"/>
 
-	<div id="PipelineDashboard">
+	<div id="PipelineDashboard" class="hide-default-hidden">
+		<a id="showHidden" href="#">Show Hidden</a>
 		<div class="embedded top">${it.topEmbedded}</div>
 		<table id="projectstatus" class="pane bigtable">
 			<tr style="border-top: 0px;">
 				<th>${it.firstColumnName}</th>
 				<j:forEach items="${it.jobColumns}" var="job">
-					<th>
+					<th class="${job.isHidden() ? 'hidden' : 'moo'}">
 						<a class="sortheader" href="job/${job.jobName}">${job.alias}</a>
 					</th>
 				</j:forEach>
@@ -108,7 +131,7 @@
 				<tr id="row-${table.lastSuccessfulRow.getName()}" class="lastSuccessfulRow ${table.lastSuccessfulRow.isHighlighted() ? 'highlighted' : ''}">
 					<td class="custom">${table.lastSuccessfulRow.getDisplayName()}</td>
 					<j:forEach items="${table.lastSuccessfulRow.getColumns()}" var="column">
-						<td class="build" url="${column.getUrl()}">
+						<td class="build ${column.columnHeader.isHidden() ? 'hidden' : ''}" url="${column.getUrl()}">
 							<j:if test="${!column.isEmpty()}">
 								<a href="${column.getUrl()}testReport">
 									<img src="${column.getBuildStatusUrl()}"/>
@@ -133,7 +156,7 @@
 						${row.getDisplayName()}
 					</td>
 					<j:forEach items="${row.getColumns()}" var="column">
-						<td class="build" url="${column.getUrl()}">
+						<td class="build ${column.columnHeader.isHidden() ? 'hidden' : ''}" url="${column.getUrl()}">
 							<j:if test="${!column.isEmpty()}">
 								<a class="status" href="${column.getUrl()}console">
 									<img src="${column.getBuildStatusUrl()}"/>
