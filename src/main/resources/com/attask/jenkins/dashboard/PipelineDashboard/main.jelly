@@ -90,6 +90,7 @@
 	<st:include page="viewTabs.jelly" it="${it.owner.viewsTabBar}"/>
 
 	<div id="PipelineDashboard">
+		<div class="embedded top">${it.topEmbedded}</div>
 		<table id="projectstatus" class="pane bigtable">
 			<tr style="border-top: 0px;">
 				<th>${it.firstColumnName}</th>
@@ -154,5 +155,6 @@
 				</tr>
 			</j:forEach>
 		</table>
+		<div class="embedded bottom">${it.bottomEmbedded}</div>
 	</div>
 </j:jelly>

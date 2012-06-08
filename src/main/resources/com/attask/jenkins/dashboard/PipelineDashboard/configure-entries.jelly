@@ -61,4 +61,11 @@
 	<f:entry title="Auto refresh" field="autoRefresh">
 		<f:checkbox/>
 	</f:entry>
+
+	<f:entry title="Embedded Content (Top)" field="topEmbedded">
+		<f:textarea/>
+	</f:entry>
+	<f:entry title="Embedded Content (Bottom)" field="bottomEmbedded">
+		<f:textarea/>
+	</f:entry>
 </j:jelly>

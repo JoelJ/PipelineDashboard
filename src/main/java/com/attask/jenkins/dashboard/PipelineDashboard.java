@@ -37,6 +37,8 @@ public class PipelineDashboard extends View {
 	public boolean highlightCommitter;
 	public boolean showLastSuccessfulBuild;
 	public boolean autoRefresh;
+	public String topEmbedded;
+	public String bottomEmbedded;
 
 	@DataBoundConstructor
 	public PipelineDashboard(String name) {
@@ -90,6 +92,9 @@ public class PipelineDashboard extends View {
 		this.highlightCommitter = "on".equals(request.getParameter("_.highlightCommitter"));
 		this.showLastSuccessfulBuild = "on".equals(request.getParameter("_.showLastSuccessfulBuild"));
 		this.autoRefresh = "on".equals(request.getParameter("_.autoRefresh"));
+
+		this.topEmbedded = request.getParameter("_.topEmbedded");
+		this.bottomEmbedded = request.getParameter("_.bottomEmbedded");
 	}
 
 	/**
