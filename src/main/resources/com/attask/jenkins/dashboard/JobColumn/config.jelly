@@ -1,0 +1,22 @@
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+	<f:entry title="Job Name" field="jobName">
+		<f:textbox/>
+	</f:entry>
+	<f:entry title="Alias" field="alias">
+		<f:textbox/>
+	</f:entry>
+	<f:entry title="Hidden" field="hidden">
+		<!--use the select fields rather than checkbox so the value is always posted to the server-->
+		<select name="hidden">
+			<option value="false">Show by default</option>
+			<option value="true">Hide by default</option>
+		</select>
+	</f:entry>
+	<f:entry title="Required for Passed Build" field="required">
+		<!--use the select fields rather than checkbox so the value is always posted to the server-->
+		<select name="required">
+			<option value="true">Require this job to pass to consider the row passed</option>
+			<option value="false">Do not require this job to pass to consider the row passed</option>
+		</select>
+	</f:entry>
+</j:jelly>

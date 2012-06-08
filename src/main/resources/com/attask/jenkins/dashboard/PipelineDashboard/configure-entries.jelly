@@ -1,36 +1,8 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-	<f:entry title="Jobs" field="jobs">
-		<f:textbox/>
-		<!--<div class="magicMultiSelect">-->
-			<!--<select id="remaining" multiple="true">-->
-				<!--<j:forEach items="${it.allJobs}" var="jobName">-->
-					 <!--<option value="${jobName}">${jobName}</option>-->
-				<!--</j:forEach>-->
-			<!--</select>-->
-			<!--<input type="button" id="add" value="-&gt;"/>-->
-			<!--<input type="button" id="remove" value="&lt;-"/>-->
-			<!--<select id="added" multiple="true"></select>-->
-
-			<!--<script>-->
-				<!--$('add').observe('click', function(evt) {-->
-					<!--console.log("clicked add");-->
-					<!--var remaining = $('remaining');-->
-					<!--var remaining = $('added');-->
-					<!--var selectedValue = remaining.selectedIndex >= 0 ? remaining.options[remaining.selectedIndex].value : undefined;-->
-					<!--console.log(selectedValue, remaining);-->
-
-				<!--});-->
-
-				<!--$('remove').observe('click', function(evt) {-->
-					<!--console.log("clicked remove");-->
-				<!--});-->
-
-				<!--function moveOption(option, from, to) {-->
-
-				<!--}-->
-			<!--</script>-->
-		<!--</div>-->
-  	</f:entry>
+	<f:entry>
+		<f:repeatableProperty field="jobColumns" minimum="1" header="Jobs" add="Add Job">
+		</f:repeatableProperty>
+	</f:entry>
 	<f:entry title="Name of First Column" field="firstColumnName">
 		<f:textbox/>
 	</f:entry>

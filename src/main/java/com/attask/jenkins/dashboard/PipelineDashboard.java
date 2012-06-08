@@ -3,7 +3,6 @@ package com.attask.jenkins.dashboard;
 import hudson.Extension;
 import hudson.model.*;
 import hudson.scm.ChangeLogSet;
-import hudson.tasks.junit.TestResultAction;
 import hudson.tasks.test.AbstractTestResultAction;
 import hudson.util.RunList;
 import jenkins.model.Jenkins;
@@ -14,6 +13,7 @@ import org.kohsuke.stapler.StaplerResponse;
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -26,7 +26,6 @@ import java.util.logging.Logger;
 public class PipelineDashboard extends View {
 	public static Logger LOGGER = Logger.getLogger(PipelineDashboard.class.getSimpleName());
 	public static final String ORB_SIZE = "24x24";
-	public List<String> jobs;
     public String descriptionRegex;
     public int descriptionRegexGroup;
     public int numberDisplayed;
@@ -40,6 +39,8 @@ public class PipelineDashboard extends View {
 	public String topEmbedded;
 	public String bottomEmbedded;
 
+	public List<JobColumn> jobColumns;
+
 	@DataBoundConstructor
 	public PipelineDashboard(String name) {
 		super(name);
@@ -52,18 +53,7 @@ public class PipelineDashboard extends View {
 
 	@Override
 	protected void submit(StaplerRequest request) throws ServletException, Descriptor.FormException, IOException {
-		String jobsParameter = request.getParameter("_.jobs");
-		this.jobs = new ArrayList<String>() {
-			//Overriding to make it show up pretty in jenkins
-			public String toString() {
-				return join(this, ", ");
-			}
-		};
-		if(jobsParameter != null) {
-			for (String job : Arrays.asList(jobsParameter.split(","))) {
-				jobs.add(job.trim());
-			}
-		}
+		this.jobColumns = JobColumn.parseFromRequest(request.getParameterMap());
 
 		this.descriptionRegex = request.getParameter("_.descriptionRegex");
 		String descriptionRegexGroup = request.getParameter("_.descriptionRegexGroup");
@@ -107,7 +97,7 @@ public class PipelineDashboard extends View {
 //		LOGGER.info("getDisplayRows starting");
 
 		Jenkins jenkins = Jenkins.getInstance();
-		Map<String, Run[]> map = findMatchingBuilds(jenkins, jobs, descriptionRegex, descriptionRegexGroup);
+		Map<String, Run[]> map = findMatchingBuilds(jenkins, jobColumns, descriptionRegex, descriptionRegexGroup);
 //		LOGGER.info("map size: " + map.size());
 
 		Table result = generateRowData(jenkins.getRootUrl(), User.current(), map, this.showBuildName, this.showFailureCount);
@@ -116,13 +106,13 @@ public class PipelineDashboard extends View {
 		return result;
 	}
 
-	protected Map<String, Run[]> findMatchingBuilds(ItemGroup<TopLevelItem> jenkins, List<String> jobs, String descriptionRegex, int descriptionRegexGroup) {
+	protected Map<String, Run[]> findMatchingBuilds(ItemGroup<TopLevelItem> jenkins, List<JobColumn> jobs, String descriptionRegex, int descriptionRegexGroup) {
 		if(jenkins == null || jobs == null || descriptionRegex == null) return Collections.emptyMap();
 		
 		Map<String, Run[]> map = new HashMap<String, Run[]>();
-		for (String jobName : jobs) {
+		for (JobColumn jobName : jobs) {
 			try {
-				Job job = (Job) jenkins.getItem(jobName);
+				Job job = (Job) jenkins.getItem(jobName.getJobName());
 				if(job == null) continue;
 				RunList builds = job.getBuilds();
 				if(builds == null) continue;
@@ -298,14 +288,27 @@ public class PipelineDashboard extends View {
 
 	@Override
 	public void onJobRenamed(Item item, String oldName, String newName) {
-		Collections.replaceAll(jobs, oldName, newName);
+		boolean changed = false;
+		for (JobColumn jobColumn : jobColumns) {
+			if(oldName.equals(jobColumn.getJobName())) {
+				jobColumn.setJobName(newName);
+				changed = true;
+			}
+		}
+		if(changed) {
+			try {
+				owner.save();
+			} catch (IOException e) {
+				LOGGER.log(Level.SEVERE, "Error saving after job rename", e);
+			}
+		}
 	}
 
 	@Override
 	public synchronized Item doCreateItem(StaplerRequest request, StaplerResponse response) throws IOException, ServletException {
 		Item item = Jenkins.getInstance().doCreateItem(request, response);
 		if (item != null) {
-			jobs.add(item.getName());
+			jobColumns.add(new JobColumn(item.getName(), null, false, true));
 			owner.save();
 		}
 		return item;
@@ -318,7 +321,7 @@ public class PipelineDashboard extends View {
 				"descriptionRegex: " + this.descriptionRegex + ", " +
 				"firstColumnName: " + this.firstColumnName + ", " +
 				"numberDisplayed: " + this.numberDisplayed + ", " +
-				"jobs: [" + this.join(this.jobs, ", ") + "]" +
+				"jobs: [" + this.join(this.jobColumns, ", ") + "]" +
 		"}";
 	}
 

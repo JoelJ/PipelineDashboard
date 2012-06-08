@@ -94,9 +94,9 @@
 		<table id="projectstatus" class="pane bigtable">
 			<tr style="border-top: 0px;">
 				<th>${it.firstColumnName}</th>
-				<j:forEach items="${it.jobs}" var="jobName">
+				<j:forEach items="${it.jobColumns}" var="job">
 					<th>
-						<a class="sortheader" href="job/${jobName}">${jobName}</a>
+						<a class="sortheader" href="job/${job.jobName}">${job.alias}</a>
 					</th>
 				</j:forEach>
 			</tr>

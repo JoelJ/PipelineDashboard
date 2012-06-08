@@ -10,6 +10,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 
 import java.io.IOException;
+import java.util.*;
 
 /**
  * User: Joel Johnson
@@ -17,7 +18,7 @@ import java.io.IOException;
  * Time: 10:37 AM
  */
 public class JobColumn extends AbstractDescribableImpl<JobColumn> {
-	private final String jobName;
+	private String jobName;
 	private final String alias;
 	private final boolean hidden;
 	private final boolean required;
@@ -42,7 +43,10 @@ public class JobColumn extends AbstractDescribableImpl<JobColumn> {
 	 * @return The name to display in the column. This is useful in cases where the Job name is too long and you want it to be abbreviated.
 	 */
 	public String getAlias() {
-		return alias;
+		if(alias != null && !alias.isEmpty()) {
+			return alias;
+		}
+		return jobName;
 	}
 
 	/**
@@ -57,6 +61,40 @@ public class JobColumn extends AbstractDescribableImpl<JobColumn> {
 	 */
 	public boolean isRequired() {
 		return required;
+	}
+
+	public static List<JobColumn> parseFromRequest(Map<String, String[]> parameterMap) {
+		String[] jobNames = parameterMap.get("_.jobName");
+		String[] aliases = parameterMap.get("_.alias");
+		String[] hidden = parameterMap.get("hidden");
+		String[] required = parameterMap.get("required");
+
+		assert jobNames.length == aliases.length;
+		assert jobNames.length == hidden.length;
+		assert jobNames.length == required.length;
+
+		List<Map<String, Object>> builder = new ArrayList<Map<String, Object>>();
+		for(int i = 0; i < jobNames.length; i++) {
+			builder.add(new HashMap<String, Object>());
+			builder.get(i).put("jobName", jobNames[i]);
+			builder.get(i).put("alias", aliases[i]);
+			builder.get(i).put("hidden", Boolean.parseBoolean(hidden[i]));
+			builder.get(i).put("required", Boolean.parseBoolean(required[i]));
+		}
+
+		List<JobColumn> jobColumns = new ArrayList<JobColumn>();
+		for (Map<String, Object> map : builder) {
+			jobColumns.add(new JobColumn((String)map.get("jobName"), (String)map.get("alias"), (Boolean)map.get("hidden"), (Boolean)map.get("required")));
+		}
+		return jobColumns;
+	}
+
+	public void setJobName(String newName) {
+		this.jobName = newName;
+	}
+
+	public String toString() {
+		return getJobName() + "(" + getAlias() + ")";
 	}
 
 	@Extension
