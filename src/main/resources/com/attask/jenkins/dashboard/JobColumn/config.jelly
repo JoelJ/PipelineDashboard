@@ -20,7 +20,6 @@
 	</f:entry>
 	<f:entry title="Required for Passed Build" field="required">
 		<!--use the select fields rather than checkbox so the value is always posted to the server-->
-		<span>${instance}</span>
 		<select name="required">
 			<j:if test="${instance == null || instance.required}">
 				<option selected="true" value="true">Require this job to pass to consider the row passed</option>
