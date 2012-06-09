@@ -28,8 +28,8 @@
 
 	<div id="PipelineDashboard" class="hide-default-hidden">
 		<div class="controls">
-			<a id="showHidden" href="#"><img src="${rootURL}/plugin/PipelineDashboard/showAll.png"/></a>
-			<a id="fullScreen" href="#"><img src="${rootURL}/plugin/PipelineDashboard/fullScreen.png"/></a>
+			<a id="showHidden" href="#showAllColumns"><img src="${rootURL}/plugin/PipelineDashboard/showAll.png"/></a>
+			<a id="fullScreen" href="#fullScreen"><img src="${rootURL}/plugin/PipelineDashboard/fullScreen.png"/></a>
 		</div>
 		<div class="embedded top">${it.topEmbedded}</div>
 		<table id="projectstatus" class="pane bigtable">
