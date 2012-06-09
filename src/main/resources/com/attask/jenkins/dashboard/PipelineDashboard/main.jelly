@@ -88,23 +88,7 @@
 		}-->
 	</style>
 
-	<script>
-		Event.observe(window, 'load', function() {
-			$('showHidden').observe('click', function(event) {
-				event.preventDefault();
-
-				if($('PipelineDashboard').toggleClassName('hide-default-hidden').hasClassName('hide-default-hidden')) {
-					event.target.innerHTML = "Show Hidden";
-				} else {
-					event.target.innerHTML = "Hide Hidden";
-				}
-
-
-				return false;
-			});
-		});
-	</script>
-
+	<script type="text/javascript" src="${rootURL}/plugin/PipelineDashboard/main.js"></script>
 	<j:if test="${it.clickForCommitDetails}">
 		<script type="text/javascript" src="${rootURL}/plugin/PipelineDashboard/magicPopup.js"></script>
 	</j:if>
