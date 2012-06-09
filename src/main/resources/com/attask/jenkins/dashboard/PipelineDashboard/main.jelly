@@ -66,6 +66,12 @@
 			display: none;
 		}
 
+		.lastSuccessHeader {
+			font-weight: bold;
+			text-decoration: underline;
+			font-size: smaller;
+		}
+
 
 <!--
 		.build a {
@@ -129,7 +135,10 @@
 
 			<j:if test="${it.showLastSuccessfulBuild and table.lastSuccessfulRow != null}">
 				<tr id="row-${table.lastSuccessfulRow.getName()}" class="lastSuccessfulRow ${table.lastSuccessfulRow.isHighlighted() ? 'highlighted' : ''}">
-					<td class="custom">${table.lastSuccessfulRow.getDisplayName()}</td>
+					<td class="custom">
+						<div class="lastSuccessHeader">Last Successful Run</div>
+						<div>${table.lastSuccessfulRow.getDisplayName()}</div>
+					</td>
 					<j:forEach items="${table.lastSuccessfulRow.getColumns()}" var="column">
 						<td class="build ${column.columnHeader.isHidden() ? 'hidden' : ''}" url="${column.getUrl()}">
 							<j:if test="${!column.isEmpty()}">
