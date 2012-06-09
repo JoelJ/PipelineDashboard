@@ -23,6 +23,9 @@ function update() {
 			if(window.initMagicPopup) {
 				window.initMagicPopup();
 			}
+			if(window.initHide) {
+				window.initHide();
+			}
 		},
 		onError: function(transport) {
 			console.log(transport);
