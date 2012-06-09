@@ -10,84 +10,9 @@
 			}
 
 		</j:if>
-
-		#commitTooltip {
-			border: 1px solid #AAA;
-			border-radius: 3px;
-			background-color: #EFEFEF;
-			max-width: 400px;
-			padding: 5px;
-			position: absolute;
-			zIndex: 200;
-		}
-
-		#commitTooltip .header {
-			font-size: 15px;
-			text-align: center;
-		}
-
-		a.sortheader {
-			text-decoration: none;
-			color: black;
-		}
-
-		.lastSuccessfulRow {
-			background-color: #CFC;
-			border-bottom: 3px double #BBB !important;
-		}
-
-		.lastSuccessfulRow:hover {
-			background-color: #BEB !important;
-			border-bottom: 3px double #BBB !important;
-		}
-
-		img#multipleCommitters {
-			float: left;
-			padding-top: 6px;
-			width: 16px;
-			height: 16px;
-		}
-
-		.build .status {
-			float: left;
-			margin-top: 3px;
-			margin-right: 5px;
-		}
-
-		.build>span {
-			float: left;
-		}
-
-		.build>span>a {
-			display: block;
-		}
-
-		.hide-default-hidden td.hidden, .hide-default-hidden th.hidden {
-			display: none;
-		}
-
-		.lastSuccessHeader {
-			font-weight: bold;
-			text-decoration: underline;
-			font-size: smaller;
-		}
-
-
-<!--
-		.build a {
-			text-decoration: none;
-		}
-
-		.build a span {
-			position: relative;
-			left: -16px;
-			color: black;
-			font-weight: bolder;
-			text-decoration: none;
-			top: 1px;
-		}-->
 	</style>
 
+	<link rel="stylesheet" type="text/css" href="${rootURL}/plugin/PipelineDashboard/main.css"/>
 	<script type="text/javascript" src="${rootURL}/plugin/PipelineDashboard/main.js"></script>
 	<j:if test="${it.clickForCommitDetails}">
 		<script type="text/javascript" src="${rootURL}/plugin/PipelineDashboard/magicPopup.js"></script>
@@ -102,7 +27,10 @@
 	<st:include page="viewTabs.jelly" it="${it.owner.viewsTabBar}"/>
 
 	<div id="PipelineDashboard" class="hide-default-hidden">
-		<a id="showHidden" href="#">Show Hidden</a>
+		<div class="controls">
+			<a id="showHidden" href="#"><img src="${rootURL}/plugin/PipelineDashboard/showAll.png"/></a>
+			<a id="fullScreen" href="#"><img src="${rootURL}/plugin/PipelineDashboard/fullScreen.png"/></a>
+		</div>
 		<div class="embedded top">${it.topEmbedded}</div>
 		<table id="projectstatus" class="pane bigtable">
 			<tr style="border-top: 0px;">

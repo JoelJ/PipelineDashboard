@@ -1,22 +1,31 @@
-Event.observe(window, 'load', initHide);
+Event.observe(window, 'load', initMain);
 
-function updateLabel() {
-	if ($('PipelineDashboard').hasClassName('hide-default-hidden')) {
-		$('showHidden').innerHTML = "Show Hidden";
-	} else {
-		$('showHidden').innerHTML = "Hide Hidden";
-	}
+function initMain() {
+	initHide();
+	initFullscreen();
 }
 
 function initHide() {
-	updateLabel();
 
 	$('showHidden').observe('click', function(event) {
 		event.preventDefault();
-
 		$('PipelineDashboard').toggleClassName('hide-default-hidden');
+		return false;
+	});
+}
 
-		updateLabel();
+function initFullscreen() {
+	$('fullScreen').observe('click', function(event) {
+		event.preventDefault();
+
+		var div = $('PipelineDashboard');
+		if(div.webkitRequestFullScreen) {
+			div.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+		}
+		if(div.mozRequestFullScreen) {
+			div.mozRequestFullScreen();
+		}
+
 
 		return false;
 	});

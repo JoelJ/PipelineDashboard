@@ -1,0 +1,75 @@
+#PipelineDashboard {
+	background-color: white;
+	width: 100%;
+	height: 100%;
+}
+
+#PipelineDashboard .controls {
+	float: right;
+}
+
+#PipelineDashboard .controls img {
+	width: 24px;
+	height: 24px;
+}
+
+#commitTooltip {
+	border: 1px solid #AAA;
+	border-radius: 3px;
+	background-color: #EFEFEF;
+	max-width: 400px;
+	padding: 5px;
+	position: absolute;
+	zIndex: 200;
+}
+
+#commitTooltip .header {
+	font-size: 15px;
+	text-align: center;
+}
+
+a.sortheader {
+	text-decoration: none;
+	color: black;
+}
+
+.lastSuccessfulRow {
+	background-color: #CFC;
+	border-bottom: 3px double #BBB !important;
+}
+
+.lastSuccessfulRow:hover {
+	background-color: #BEB !important;
+	border-bottom: 3px double #BBB !important;
+}
+
+img#multipleCommitters {
+	float: left;
+	padding-top: 6px;
+	width: 16px;
+	height: 16px;
+}
+
+.build .status {
+	float: left;
+	margin-top: 3px;
+	margin-right: 5px;
+}
+
+.build>span {
+	float: left;
+}
+
+.build>span>a {
+	display: block;
+}
+
+.hide-default-hidden td.hidden, .hide-default-hidden th.hidden {
+	display: none;
+}
+
+.lastSuccessHeader {
+	font-weight: bold;
+	text-decoration: underline;
+	font-size: smaller;
+}
