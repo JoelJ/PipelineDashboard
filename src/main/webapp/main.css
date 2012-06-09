@@ -5,13 +5,11 @@
 }
 
 #PipelineDashboard .controls {
-	float: right;
-	padding: 3px;
-	/*padding-top: 3px;*/
-	/*padding-right: 3px;*/
+
 }
 
 #PipelineDashboard .controls img {
+	padding-left: 3px;
 	width: 16px;
 	height: 16px;
 }
