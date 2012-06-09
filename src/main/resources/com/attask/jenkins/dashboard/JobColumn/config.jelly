@@ -8,11 +8,11 @@
 	<f:entry title="Hidden" field="hidden">
 		<!--use the select fields rather than checkbox so the value is always posted to the server-->
 		<select name="hidden">
-			<j:if test="${instance == null || instance.hidden}">
+			<j:if test="${instance != null and instance.hidden}">
 				<option value="false">Show by default</option>
 				<option selected="true" value="true">Hide by default</option>
 			</j:if>
-			<j:if test="${!instance.hidden}">
+			<j:if test="${instance == null || !instance.hidden}">
 				<option selected="true" value="false">Show by default</option>
 				<option value="true">Hide by default</option>
 			</j:if>
@@ -25,7 +25,7 @@
 				<option selected="true" value="true">Require this job to pass to consider the row passed</option>
 				<option value="false">Do not require this job to pass to consider the row passed</option>
 			</j:if>
-			<j:if test="${!instance.required}">
+			<j:if test="${instance != null and !instance.required}">
 				<option value="true">Require this job to pass to consider the row passed</option>
 				<option selected="true" value="false">Do not require this job to pass to consider the row passed</option>
 			</j:if>
