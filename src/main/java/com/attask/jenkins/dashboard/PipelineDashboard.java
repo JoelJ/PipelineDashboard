@@ -231,11 +231,16 @@ public class PipelineDashboard extends View {
 				lastSuccessfulRow = row;
 			}
 
-			result.add(row);
-			i++;
-			if(i >= numberDisplayed || i >= rows.size()) {
-				break;
+			if(i < numberDisplayed && i < rows.size()) {
+				//Only add as many as defined. We might be iterating just to look for the last success
+				result.add(row);
+			} else {
+				//keep looking for the last successful row even if it's not shown otherwise
+				if(lastSuccessfulRow != null) {
+					break;
+				}
 			}
+			i++;
 		}
 		return new Table(result, lastSuccessfulRow);
 	}
