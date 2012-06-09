@@ -136,6 +136,7 @@
 			<j:if test="${it.showLastSuccessfulBuild and table.lastSuccessfulRow != null}">
 				<tr id="row-${table.lastSuccessfulRow.getName()}" class="lastSuccessfulRow ${table.lastSuccessfulRow.isHighlighted() ? 'highlighted' : ''}">
 					<td class="custom">
+						<div class="lastSuccessHeader">Last Successful Row</div>
 						<j:if test="${table.lastSuccessfulRow.getHasMultiple()}">
 							<img id="multipleCommitters" src="${rootURL}/plugin/PipelineDashboard/multiple_committers.png" />
 						</j:if>
