@@ -9,7 +9,7 @@ function update() {
 		method: 'get',
 		evalJS: 'false',
 		onSuccess: function(transport) {
-			var resultBody = transport.response;
+			var resultBody = transport.responseText;
 
 			var myDiv = $(document.createElement("div"));
 			myDiv.innerHTML = resultBody;
