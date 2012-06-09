@@ -171,7 +171,7 @@ public class PipelineDashboard extends View {
 
 					if(build != null) {
 						if(!build.getParent().getName().equals(columnHeader.getJobName())) {
-							throw new RuntimeException("Got out of sync");
+							LOGGER.log(Level.SEVERE, "Out of sync! columnHeader: " +  columnHeader.getJobName() + " Build: " + build.getParent().getName());
 						}
 //						LOGGER.info("\t" + build.getDisplayName() + " " + build.getDescription());
 						if(date == null) {
