@@ -136,16 +136,25 @@
 			<j:if test="${it.showLastSuccessfulBuild and table.lastSuccessfulRow != null}">
 				<tr id="row-${table.lastSuccessfulRow.getName()}" class="lastSuccessfulRow ${table.lastSuccessfulRow.isHighlighted() ? 'highlighted' : ''}">
 					<td class="custom">
-						<div class="lastSuccessHeader">Last Successful Run</div>
-						<div>${table.lastSuccessfulRow.getDisplayName()}</div>
+						<j:if test="${table.lastSuccessfulRow.getHasMultiple()}">
+							<img id="multipleCommitters" src="${rootURL}/plugin/PipelineDashboard/multiple_committers.png" />
+						</j:if>
+						${table.lastSuccessfulRow.getDisplayName()}
 					</td>
 					<j:forEach items="${table.lastSuccessfulRow.getColumns()}" var="column">
 						<td class="build ${column.columnHeader.isHidden() ? 'hidden' : ''}" url="${column.getUrl()}">
 							<j:if test="${!column.isEmpty()}">
-								<a href="${column.getUrl()}testReport">
+								<a class="status" href="${column.getUrl()}console">
 									<img src="${column.getBuildStatusUrl()}"/>
-									<span>${column.getName()}</span>
 								</a>
+								<span>
+									<j:if test="${column.getName().length() > -1}">
+										<a class="name" href="${column.getUrl()}">${column.getName()}</a>
+									</j:if>
+									<j:if test="${column.getFailureCount() > -1}">
+										<a class="failureCount" href="${column.getUrl()}testReport">(${column.getFailureCount()} failures)</a>
+									</j:if>
+								</span>
 							</j:if>
 							<j:if test="${column.isEmpty()}">
 								<span>?</span>
