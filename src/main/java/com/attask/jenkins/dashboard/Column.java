@@ -1,5 +1,9 @@
 package com.attask.jenkins.dashboard;
 
+import hudson.Util;
+
+import java.util.GregorianCalendar;
+
 /**
  * Holds the data needed to render a column in the view.
  *
@@ -15,12 +19,13 @@ public class Column {
 	private final String buildStatusUrl;
 	private final boolean isEmpty;
 	private final boolean isPassed;
+	private final long timestamp;
 
 	public static Column getEmpty(JobColumn jobHeader) {
 		return new Column(jobHeader);
 	}
 
-	private Column(JobColumn columnHeader, String name, int failureCount, String url, String buildStatusUrl, boolean isEmpty) {
+	private Column(JobColumn columnHeader, String name, int failureCount, String url, String buildStatusUrl, boolean isEmpty, long timestamp) {
 		this.columnHeader = columnHeader;
 		this.name = name;
 		this.failureCount = failureCount;
@@ -28,14 +33,15 @@ public class Column {
 		this.buildStatusUrl = buildStatusUrl;
 		this.isEmpty = isEmpty;
 		this.isPassed = this.buildStatusUrl.contains("blue.png");
+		this.timestamp = timestamp;
 	}
 
-	public Column(JobColumn columnHeader, String name, int failureCount, String url, String buildStatusUrl) {
-		this(columnHeader, name, failureCount, url, buildStatusUrl, false);
+	public Column(JobColumn columnHeader, String name, int failureCount, String url, String buildStatusUrl, long timestamp) {
+		this(columnHeader, name, failureCount, url, buildStatusUrl, false, timestamp);
 	}
 
 	private Column(JobColumn column) {
-		this(column, "", -1, "", "", true);
+		this(column, "", -1, "", "", true, -1);
 	}
 
 	public JobColumn getColumnHeader() {
@@ -69,5 +75,14 @@ public class Column {
 
 	public boolean isEmpty() {
 		return isEmpty;
+	}
+
+	public long getTimestamp() {
+		return timestamp;
+	}
+
+	public String getSinceTimestamp() {
+		long duration = new GregorianCalendar().getTimeInMillis() - getTimestamp();
+		return Util.getPastTimeString(duration);
 	}
 }

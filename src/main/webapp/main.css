@@ -74,3 +74,8 @@ img#multipleCommitters {
 	text-decoration: underline;
 	font-size: smaller;
 }
+
+.lastSuccessHeader .timestamp {
+	font-weight: normal;
+	font-size: smaller;
+}

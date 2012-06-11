@@ -69,4 +69,13 @@ public class Row {
 	public boolean getHasMultiple() {
 		return hasMultiple;
 	}
+
+	public Column getFirst() {
+		for (Column column : columns) {
+			if(!column.isEmpty()) {
+				return column;
+			}
+		}
+		return null;
+	}
 }
