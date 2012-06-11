@@ -9,6 +9,7 @@ import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.export.Exported;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -26,19 +27,43 @@ import java.util.logging.Logger;
 public class PipelineDashboard extends View {
 	public static Logger LOGGER = Logger.getLogger(PipelineDashboard.class.getSimpleName());
 	public static final String ORB_SIZE = "24x24";
+	@Exported
     public String descriptionRegex;
+
+	@Exported
     public int descriptionRegexGroup;
+
+	@Exported
     public int numberDisplayed;
+
+	@Exported
 	public String firstColumnName;
+
+	@Exported
 	public boolean showBuildName;
+
+	@Exported
 	public boolean showFailureCount;
+
+	@Exported
 	public boolean clickForCommitDetails;
+
+	@Exported
 	public boolean highlightCommitter;
+
+	@Exported
 	public boolean showLastSuccessfulBuild;
+
+	@Exported
 	public boolean autoRefresh;
+
+	@Exported
 	public String topEmbedded;
+
+	@Exported
 	public String bottomEmbedded;
 
+	@Exported
 	public List<JobColumn> jobColumns;
 
 	@DataBoundConstructor
@@ -93,6 +118,7 @@ public class PipelineDashboard extends View {
 	 * 			regex provided. The list is sorted by build date starting with the most recent.
 	 */
 	@SuppressWarnings("UnusedDeclaration")
+	@Exported
 	public Table getDisplayRows() { //show hidden is from a request parameter. Hence the string rather than boolean
 //		LOGGER.info("getDisplayRows starting");
 

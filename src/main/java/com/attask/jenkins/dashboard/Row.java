@@ -1,5 +1,8 @@
 package com.attask.jenkins.dashboard;
 
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
+
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +13,7 @@ import java.util.List;
  * Date: 2/9/12
  * Time: 9:56 AM
  */
+@ExportedBean
 public class Row {
 	private final Date date;
 	private final String name;
@@ -27,19 +31,23 @@ public class Row {
 		this.highlighted = currentUser;
 		this.hasMultiple = hasMultiple;
 	}
-	
+
+	@Exported
 	public Date getDate() {
 		return date;
 	}
 
+	@Exported
 	public String getName() {
 		return name;
 	}
-	
+
+	@Exported
 	public String getDisplayName() {
 		return displayName;
 	}
 
+	@Exported
 	public List<Column> getColumns() {
 		return columns;
 	}
@@ -49,6 +57,7 @@ public class Row {
 		return name;
 	}
 
+	@Exported
 	public boolean isHighlighted() {
 		return highlighted;
 	}
@@ -66,10 +75,12 @@ public class Row {
 		return true;
 	}
 
+	@Exported
 	public boolean getHasMultiple() {
 		return hasMultiple;
 	}
 
+	@Exported
 	public Column getFirst() {
 		for (Column column : columns) {
 			if(!column.isEmpty()) {

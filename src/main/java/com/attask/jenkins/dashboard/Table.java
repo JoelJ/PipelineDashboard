@@ -1,5 +1,8 @@
 package com.attask.jenkins.dashboard;
 
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -8,6 +11,7 @@ import java.util.List;
  * Date: 2/27/12
  * Time: 9:22 AM
  */
+@ExportedBean
 public class Table {
 	public static Table EMPTY_TABLE = new Table(Collections.<Row>emptyList(), null);
 
@@ -22,6 +26,7 @@ public class Table {
 	/**
 	 * @return the last row found that had all successful builds. Can be null.
 	 */
+	@Exported
 	public Row getLastSuccessfulRow() {
 		return lastSuccessfulRow;
 	}
@@ -29,6 +34,7 @@ public class Table {
 	/**
 	 * @return All the rows in the table. Not null.
 	 */
+	@Exported
 	public List<Row> getRows() {
 		return rows;
 	}

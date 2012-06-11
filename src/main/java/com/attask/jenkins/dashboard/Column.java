@@ -1,6 +1,8 @@
 package com.attask.jenkins.dashboard;
 
 import hudson.Util;
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
 
 import java.util.GregorianCalendar;
 
@@ -11,6 +13,7 @@ import java.util.GregorianCalendar;
  * Date: 2/9/12
  * Time: 10:29 AM
  */
+@ExportedBean
 public class Column {
 	private final JobColumn columnHeader;
 	private final String name;
@@ -48,22 +51,27 @@ public class Column {
 		return columnHeader;
 	}
 
+	@Exported
 	public String getName() {
 		return name;
 	}
 
+	@Exported
 	public int getFailureCount() {
 		return failureCount;
 	}
 
+	@Exported
 	public String getUrl() {
 		return url;
 	}
-	
+
+	@Exported
 	public String getBuildStatusUrl() {
 		return buildStatusUrl;
 	}
 
+	@Exported
 	public boolean isPassed() {
 		return isPassed;
 	}
@@ -73,10 +81,12 @@ public class Column {
 		return name + " (" +url+ ")";
 	}
 
+	@Exported
 	public boolean isEmpty() {
 		return isEmpty;
 	}
 
+	@Exported
 	public long getTimestamp() {
 		return timestamp;
 	}

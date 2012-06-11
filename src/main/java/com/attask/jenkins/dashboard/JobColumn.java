@@ -8,6 +8,8 @@ import hudson.model.Project;
 import hudson.util.FormValidation;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
 
 import java.io.IOException;
 import java.util.*;
@@ -17,6 +19,7 @@ import java.util.*;
  * Date: 6/8/12
  * Time: 10:37 AM
  */
+@ExportedBean
 public class JobColumn extends AbstractDescribableImpl<JobColumn> {
 	private String jobName;
 	private final String alias;
@@ -35,6 +38,7 @@ public class JobColumn extends AbstractDescribableImpl<JobColumn> {
 	/**
 	 * @return The actual name of the jenkins job.
 	 */
+	@Exported
 	public String getJobName() {
 		return jobName;
 	}
@@ -42,6 +46,7 @@ public class JobColumn extends AbstractDescribableImpl<JobColumn> {
 	/**
 	 * @return The name to display in the column. This is useful in cases where the Job name is too long and you want it to be abbreviated.
 	 */
+	@Exported
 	public String getAlias() {
 		if(alias != null && !alias.isEmpty()) {
 			return alias;
@@ -52,6 +57,7 @@ public class JobColumn extends AbstractDescribableImpl<JobColumn> {
 	/**
 	 * @return If true this job is hidden by default.
 	 */
+	@Exported
 	public boolean isHidden() {
 		return hidden;
 	}
@@ -59,6 +65,7 @@ public class JobColumn extends AbstractDescribableImpl<JobColumn> {
 	/**
 	 * @return If true, this job will be used to determine if the whole row passed.
 	 */
+	@Exported
 	public boolean isRequired() {
 		return required;
 	}
