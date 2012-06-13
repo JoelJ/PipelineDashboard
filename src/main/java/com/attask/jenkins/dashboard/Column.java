@@ -47,6 +47,7 @@ public class Column {
 		this(column, "", -1, "", "", true, -1);
 	}
 
+	@Exported
 	public JobColumn getColumnHeader() {
 		return columnHeader;
 	}
