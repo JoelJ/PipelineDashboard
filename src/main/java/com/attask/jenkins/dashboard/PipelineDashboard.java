@@ -155,7 +155,16 @@ public class PipelineDashboard extends View {
 						if(!map.containsKey(key)) {
 							map.put(key, new Run[jobs.size()]);
 						}
-						map.get(key)[jobs.indexOf(jobName)] = build;
+
+						Run[] runs = map.get(key);
+						int index = jobs.indexOf(jobName);
+						//Don't replace. Only add new ones.
+						if(runs[index] == null) {
+							Run oldBuild = runs[index];
+							if(oldBuild.getTimestamp().before(build.getTimestamp())) {
+								runs[index] = build;
+							}
+						}
 					}
 				}
 			} catch(Throwable t) {
