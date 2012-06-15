@@ -246,32 +246,13 @@ public class PipelineDashboard extends View {
 						}
 
 						//Only show the count if it's Successful or Unstable
-						// (Successful because of the Status override plugin.)
-						int failureCount = -1;
-						if(showFailureCount) {
-							if((build.getResult() == Result.SUCCESS || build.getResult() == Result.UNSTABLE)) {
-								AbstractTestResultAction testResultAction = build.getAction(AbstractTestResultAction.class);
-								if(testResultAction != null) {
-									failureCount = testResultAction.getFailCount();
-								}
-							} else if(testUpdateRegex != null && !testUpdateRegex.isEmpty() && build.isBuilding()) {
-								Pattern pattern = Pattern.compile(testUpdateRegex);
-								@SuppressWarnings("unchecked")
-								List<String> log = new ArrayList<String>(build.getLog(100));
-								Collections.reverse(log);
-								for (String line : log) {
-									Matcher matcher = pattern.matcher(line);
-									if(matcher.find()) {
-										String failureCountMatch = matcher.group(failureRegexGroup);
-										failureCount = Integer.parseInt(failureCountMatch);
-										break ;
-									}
-								}
-							}
-						}
+						// (Successful because of the Status override plugin.
+						// So you could have a passed build with >0 failures)
+						int failureCount = getFailureCount(showFailureCount, build);
 
+						BallColor ballColor = getBuildStatusColor(build, failureCount);
 
-						columns.add(new Column(columnHeader, rowDisplayName, failureCount, build.getUrl(), rootUrl + "/static/832a5f9d/images/" + ORB_SIZE + "/" + build.getBuildStatusUrl(), build.getTimeInMillis()));
+						columns.add(new Column(columnHeader, rowDisplayName, failureCount, build.getUrl(), rootUrl + "/static/832a5f9d/images/" + ORB_SIZE + "/" + ballColor.getImage(), build.getTimeInMillis()));
 
 						//noinspection StringEquality
 						if(displayName == rowName && build.getDescription() != null && !build.getDescription().trim().isEmpty()) { // I really do want to do reference equals and not value equals.
@@ -315,6 +296,61 @@ public class PipelineDashboard extends View {
 			i++;
 		}
 		return new Table(result, lastSuccessfulRow);
+	}
+
+	/**
+	 * Gets the build status ball color based on the context of the build and the view.
+	 * @param build The build to get the image url from.
+	 * @param failureCount Number of failures the build has.
+	 * @return
+	 * If the view is configured to show live failure updates and:
+	 * <ul>
+	 * 	<li>the failureCount is negative: this returns BallColor.GREY_ANIME</li>
+	 * 	<li>the failureCount is positive: this returns BallColor.YELLOW_ANIME</li>
+	 * 	<li>the failureCount is zero: this returns BallColor.BLUE_ANIME</li>
+	 * </ul>
+	 * If the view is <b>not</b> configured to show live failure updates, then it just returns the value of Run#getIconColor
+	 */
+	private BallColor getBuildStatusColor(Run build, int failureCount) {
+		if(build.isBuilding() && isUsingLiveFailureUpdates()) {
+			if(failureCount < 0) {
+				return BallColor.GREY_ANIME;
+			} else if(failureCount == 0) {
+				return BallColor.BLUE_ANIME;
+			} else /*failureCount > 0*/ {
+				return BallColor.YELLOW_ANIME;
+			}
+		} else {
+			return build.getIconColor();
+		}
+	}
+
+	private int getFailureCount(boolean showFailureCount, Run build) throws IOException {
+		if(showFailureCount) {
+			if((build.getResult() == Result.SUCCESS || build.getResult() == Result.UNSTABLE)) {
+				AbstractTestResultAction testResultAction = build.getAction(AbstractTestResultAction.class);
+				if(testResultAction != null) {
+					return testResultAction.getFailCount();
+				}
+			} else if(isUsingLiveFailureUpdates() && build.isBuilding()) {
+				Pattern pattern = Pattern.compile(testUpdateRegex);
+				@SuppressWarnings("unchecked")
+				List<String> log = new ArrayList<String>(build.getLog(100));
+				Collections.reverse(log);
+				for (String line : log) {
+					Matcher matcher = pattern.matcher(line);
+					if(matcher.find()) {
+						String failureCountMatch = matcher.group(failureRegexGroup);
+						return Integer.parseInt(failureCountMatch);
+					}
+				}
+			}
+		}
+		return -1;
+	}
+
+	private boolean isUsingLiveFailureUpdates() {
+		return testUpdateRegex != null && !testUpdateRegex.isEmpty();
 	}
 
 	private boolean getUserIsCommitter(User currentUser, Run build) {
