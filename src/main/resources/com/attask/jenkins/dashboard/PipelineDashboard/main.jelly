@@ -28,14 +28,14 @@
 
 	<div id="PipelineDashboard" class="hide-default-hidden">
 		<div class="embedded top">${it.topEmbedded}</div>
+		<span class="controls">
+			<a id="showHidden" href="#showAllColumns"><img src="${rootURL}/plugin/PipelineDashboard/showAll.png"/></a>
+			<a id="fullScreen" href="#fullScreen"><img src="${rootURL}/plugin/PipelineDashboard/fullScreen.png"/></a>
+		</span>
 		<table id="projectstatus" class="pane bigtable">
 			<tr style="border-top: 0px;">
 				<th>
 					${it.firstColumnName}
-					<span class="controls">
-						<a id="showHidden" href="#showAllColumns"><img src="${rootURL}/plugin/PipelineDashboard/showAll.png"/></a>
-						<a id="fullScreen" href="#fullScreen"><img src="${rootURL}/plugin/PipelineDashboard/fullScreen.png"/></a>
-					</span>
 				</th>
 				<j:forEach items="${it.jobColumns}" var="job">
 					<th class="${job.isHidden() ? 'hidden' : 'moo'}">
