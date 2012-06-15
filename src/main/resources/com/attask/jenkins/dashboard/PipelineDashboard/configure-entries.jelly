@@ -40,4 +40,12 @@
 	<f:entry title="Embedded Content (Bottom)" field="bottomEmbedded">
 		<f:textarea/>
 	</f:entry>
+
+	<f:entry title="Test Status Update (Regex)" field="testUpdateRegex" help="Leave blank to disable this feature">
+		<f:textbox/>
+	</f:entry>
+	<f:entry title="failureRegexGroup" field="failureRegexGroup">
+		<f:textbox/>
+	</f:entry>
+
 </j:jelly>

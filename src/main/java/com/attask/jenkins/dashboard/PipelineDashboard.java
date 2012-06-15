@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * A view that shows a table of builds that are related (determined by build description and a regex).
@@ -66,6 +68,12 @@ public class PipelineDashboard extends View {
 	@Exported
 	public List<JobColumn> jobColumns;
 
+	@Exported
+	public String testUpdateRegex;
+
+	@Exported
+	public int failureRegexGroup;
+
 	@DataBoundConstructor
 	public PipelineDashboard(String name) {
 		super(name);
@@ -110,6 +118,18 @@ public class PipelineDashboard extends View {
 
 		this.topEmbedded = request.getParameter("_.topEmbedded");
 		this.bottomEmbedded = request.getParameter("_.bottomEmbedded");
+
+		this.testUpdateRegex = request.getParameter("_.testUpdateRegex");
+
+		String failureRegexGroup = request.getParameter("_.failureRegexGroup");
+		if(failureRegexGroup != null && !failureRegexGroup.isEmpty()) {
+			this.failureRegexGroup = Integer.parseInt(failureRegexGroup);
+			if(this.failureRegexGroup < 0) {
+				this.failureRegexGroup = 0;
+			}
+		} else {
+			this.failureRegexGroup = -1;
+		}
 	}
 
 	/**
@@ -159,11 +179,13 @@ public class PipelineDashboard extends View {
 						Run[] runs = map.get(key);
 						int index = jobs.indexOf(jobName);
 						//Don't replace. Only add new ones.
-						if(runs[index] == null) {
+						if(runs[index] != null) {
 							Run oldBuild = runs[index];
 							if(oldBuild.getTimestamp().before(build.getTimestamp())) {
 								runs[index] = build;
 							}
+						} else {
+							runs[index] = build;
 						}
 					}
 				}
@@ -226,10 +248,25 @@ public class PipelineDashboard extends View {
 						//Only show the count if it's Successful or Unstable
 						// (Successful because of the Status override plugin.)
 						int failureCount = -1;
-						if(showFailureCount && (build.getResult() == Result.SUCCESS || build.getResult() == Result.UNSTABLE)) {
-							AbstractTestResultAction testResultAction = build.getAction(AbstractTestResultAction.class);
-							if(testResultAction != null) {
-								failureCount = testResultAction.getFailCount();
+						if(showFailureCount) {
+							if((build.getResult() == Result.SUCCESS || build.getResult() == Result.UNSTABLE)) {
+								AbstractTestResultAction testResultAction = build.getAction(AbstractTestResultAction.class);
+								if(testResultAction != null) {
+									failureCount = testResultAction.getFailCount();
+								}
+							} else if(testUpdateRegex != null && !testUpdateRegex.isEmpty() && build.isBuilding()) {
+								Pattern pattern = Pattern.compile(testUpdateRegex);
+								@SuppressWarnings("unchecked")
+								List<String> log = new ArrayList<String>(build.getLog(100));
+								Collections.reverse(log);
+								for (String line : log) {
+									Matcher matcher = pattern.matcher(line);
+									if(matcher.find()) {
+										String failureCountMatch = matcher.group(failureRegexGroup);
+										failureCount = Integer.parseInt(failureCountMatch);
+										break ;
+									}
+								}
 							}
 						}
 
