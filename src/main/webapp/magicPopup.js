@@ -1,29 +1,34 @@
 Event.observe(window, 'load', function() {
-	initMagicPopup();
+	$("projectstatus").observe("click", openPopup)
 	document.body.observe("click", closePopup);
 });
 
-var initMagicPopup = function() {
-	$$(".custom").each(function(it) {
-		it.observe("click", openPopup);
-	});
-};
-
 var openPopup = (function(e){
-	var div;
-	if(window.commitTooltip) {
-		div = window.commitTooltip;
-	} else {
-		div = document.createElement("div");
-		div.setAttribute('id', 'commitTooltip');
-		window.commitTooltip = div;
-		document.body.appendChild(div);
+	var target = $(e.target);
+
+	if(!e.target.hasClassName("custom")) {
+		var customColumn = target.up(".custom");
+		if(customColumn) {
+			target = customColumn;
+		}
 	}
 
-	var siblings = e.target.siblings();
-	var first = siblings[0];
-	var url = first.getAttribute('url') + "api/json";
-	showContent(div, url, e.clientX + window.scrollX, e.clientY + window.scrollY);
+	if(target) {
+		var div;
+		if(window.commitTooltip) {
+			div = window.commitTooltip;
+		} else {
+			div = document.createElement("div");
+			div.setAttribute('id', 'commitTooltip');
+			window.commitTooltip = div;
+			document.body.appendChild(div);
+		}
+
+		var siblings = target.siblings();
+		var first = siblings[0];
+		var url = first.getAttribute('url') + "api/json";
+		showContent(div, url, e.clientX + window.scrollX, e.clientY + window.scrollY);
+	}
 });
 
 var closePopup = (function(e) {
@@ -45,8 +50,14 @@ var showContent = (function(element, url, x, y) {
 			var json = transport.responseText;
 			var result = eval('('+json+')');
 
+			if(!result || !result.changeSet || !result.changeSet.items) {
+				console.log("no changeset");
+				return;
+			}
+
 			var changeSet = result.changeSet.items;
 			if(changeSet.length <= 0) {
+				console.log("empty changeset")
 				return;
 			}
 
