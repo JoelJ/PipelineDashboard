@@ -122,22 +122,5 @@ public class JobColumn extends AbstractDescribableImpl<JobColumn> {
 		public String getDisplayName() {
 			return "Job";
 		}
-
-		public FormValidation doCheckStackName(@QueryParameter String value) throws IOException {
-			if (value == null || value.length() == 0) {
-				return FormValidation.error("Empty job name");
-			}
-
-			AbstractProject nearest = Project.findNearest(value);
-			if(nearest == null) {
-				if(value.contains("$")) {
-					return FormValidation.warning(value + " is not a valid Jenkins job. But it appears a variable is being used.");
-				} else {
-					return FormValidation.error(value + " is not a valid Jenkins job");
-				}
-			}
-
-			return FormValidation.ok();
-		}
 	}
 }
