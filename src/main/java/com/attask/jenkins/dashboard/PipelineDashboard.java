@@ -408,18 +408,20 @@ public class PipelineDashboard extends View {
 
 	@Override
 	public void onJobRenamed(Item item, String oldName, String newName) {
-		boolean changed = false;
-		for (JobColumn jobColumn : jobColumns) {
-			if(oldName.equals(jobColumn.getJobName())) {
-				jobColumn.setJobName(newName);
-				changed = true;
+		if(jobColumns != null && owner != null && oldName != null && newName != null && item != null) {
+			boolean changed = false;
+			for (JobColumn jobColumn : jobColumns) {
+				if(oldName.equals(jobColumn.getJobName())) {
+					jobColumn.setJobName(newName);
+					changed = true;
+				}
 			}
-		}
-		if(changed) {
-			try {
-				owner.save();
-			} catch (IOException e) {
-				LOGGER.log(Level.SEVERE, "Error saving after job rename", e);
+			if(changed) {
+				try {
+					owner.save();
+				} catch (IOException e) {
+					LOGGER.log(Level.SEVERE, "Error saving after job rename", e);
+				}
 			}
 		}
 	}
