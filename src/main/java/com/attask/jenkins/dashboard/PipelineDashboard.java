@@ -29,50 +29,21 @@ import java.util.regex.Pattern;
 public class PipelineDashboard extends View {
 	public static Logger LOGGER = Logger.getLogger(PipelineDashboard.class.getSimpleName());
 	public static final String ORB_SIZE = "24x24";
-	@Exported
-    public String descriptionRegex;
-
-	@Exported
-    public int descriptionRegexGroup;
-
-	@Exported
-    public int numberDisplayed;
-
-	@Exported
-	public String firstColumnName;
-
-	@Exported
-	public boolean showBuildName;
-
-	@Exported
-	public boolean showFailureCount;
-
-	@Exported
-	public boolean clickForCommitDetails;
-
-	@Exported
-	public boolean highlightCommitter;
-
-	@Exported
-	public boolean showLastSuccessfulBuild;
-
-	@Exported
-	public boolean autoRefresh;
-
-	@Exported
-	public String topEmbedded;
-
-	@Exported
-	public String bottomEmbedded;
-
-	@Exported
-	public List<JobColumn> jobColumns;
-
-	@Exported
-	public String testUpdateRegex;
-
-	@Exported
-	public int failureRegexGroup;
+    private String descriptionRegex;
+	private int descriptionRegexGroup;
+    private int numberDisplayed;
+	private String firstColumnName;
+	private boolean showBuildName;
+	private boolean showFailureCount;
+	private boolean clickForCommitDetails;
+	private boolean highlightCommitter;
+	private boolean showLastSuccessfulBuild;
+	private boolean autoRefresh;
+	private String topEmbedded;
+	private String bottomEmbedded;
+	private List<JobColumn> jobColumns;
+	private String testUpdateRegex;
+	private int failureRegexGroup;
 
 	@DataBoundConstructor
 	public PipelineDashboard(String name) {
@@ -86,6 +57,7 @@ public class PipelineDashboard extends View {
 
 	@Override
 	protected void submit(StaplerRequest request) throws ServletException, Descriptor.FormException, IOException {
+		//noinspection unchecked
 		this.jobColumns = JobColumn.parseFromRequest(request.getParameterMap());
 
 		this.descriptionRegex = request.getParameter("_.descriptionRegex");
@@ -445,6 +417,81 @@ public class PipelineDashboard extends View {
 				"numberDisplayed: " + this.numberDisplayed + ", " +
 				"jobs: [" + this.join(this.jobColumns, ", ") + "]" +
 		"}";
+	}
+
+	@Exported
+	public String getDescriptionRegex() {
+		return descriptionRegex;
+	}
+
+	@Exported
+	public int getDescriptionRegexGroup() {
+		return descriptionRegexGroup;
+	}
+
+	@Exported
+	public int getNumberDisplayed() {
+		return numberDisplayed;
+	}
+
+	@Exported
+	public String getFirstColumnName() {
+		return firstColumnName;
+	}
+
+	@Exported
+	public boolean isShowBuildName() {
+		return showBuildName;
+	}
+
+	@Exported
+	public boolean isShowFailureCount() {
+		return showFailureCount;
+	}
+
+	@Exported
+	public boolean isClickForCommitDetails() {
+		return clickForCommitDetails;
+	}
+
+	@Exported
+	public boolean isHighlightCommitter() {
+		return highlightCommitter;
+	}
+
+	@Exported
+	public boolean isShowLastSuccessfulBuild() {
+		return showLastSuccessfulBuild;
+	}
+
+	@Exported
+	public boolean isAutoRefresh() {
+		return autoRefresh;
+	}
+
+	@Exported
+	public String getTopEmbedded() {
+		return topEmbedded;
+	}
+
+	@Exported
+	public String getBottomEmbedded() {
+		return bottomEmbedded;
+	}
+
+	@Exported
+	public List<JobColumn> getJobColumns() {
+		return jobColumns;
+	}
+
+	@Exported
+	public String getTestUpdateRegex() {
+		return testUpdateRegex;
+	}
+
+	@Exported
+	public int getFailureRegexGroup() {
+		return failureRegexGroup;
 	}
 
 	@Extension
