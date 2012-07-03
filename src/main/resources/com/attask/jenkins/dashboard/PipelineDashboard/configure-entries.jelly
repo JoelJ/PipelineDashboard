@@ -47,5 +47,18 @@
 	<f:entry title="failureRegexGroup" field="failureRegexGroup">
 		<f:textbox/>
 	</f:entry>
+	<f:entry title="Custom Column Class" field="customColumn">
+		<select name="_.customColumn">
+			<option value="">-- None --</option>
+			<j:forEach items="${it.allCustomColumns()}" var="customColumn">
+				<j:if test="${it.customColumn == customColumn.getClass().getCanonicalName()}">
+					<option selected="true" value="${customColumn.getClass().getCanonicalName()}">${customColumn.getClass().getSimpleName()}</option>
+				</j:if>
+				<j:if test="${it.customColumn != customColumn.getClass().getCanonicalName()}">
+					<option value="${customColumn.getClass().getCanonicalName()}">${customColumn.getClass().getSimpleName()}</option>
+				</j:if>
+			</j:forEach>
+		</select>
+	</f:entry>
 
 </j:jelly>

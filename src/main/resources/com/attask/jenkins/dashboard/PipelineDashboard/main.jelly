@@ -24,9 +24,19 @@
 
 	<j:set var="views" value="${it.owner.views}"/>
 	<j:set var="currentView" value="${it}"/>
+
+	<j:set var="customColumn" value="${it.createCustomColumn()}"/>
+
 	<st:include page="viewTabs.jelly" it="${it.owner.viewsTabBar}"/>
 
 	<div id="PipelineDashboard" class="hide-default-hidden">
+		<j:set var="table" value="${it.getDisplayRows()}"/>
+
+		<j:if test="${customColumn != null}">
+			${customColumn.beforeTable(table)}
+			<st:include page="top.jelly" it="${customColumn}"/>
+		</j:if>
+
 		<div class="embedded top">${it.topEmbedded}</div>
 		<span class="controls">
 			<a id="showHidden" href="#showAllColumns"><img src="${rootURL}/plugin/PipelineDashboard/showAll.png"/></a>
@@ -34,6 +44,9 @@
 		</span>
 		<table id="projectstatus" class="pane bigtable">
 			<tr style="border-top: 0px;">
+				<j:if test="${customColumn != null}">
+					<th class="customColumn">${customColumn.getHeaderName()}</th>
+				</j:if>
 				<th>
 					${it.firstColumnName}
 				</th>
@@ -43,14 +56,18 @@
 					</th>
 				</j:forEach>
 			</tr>
-			<j:set var="table" value="${it.getDisplayRows()}"/>
 
 			<!--Display the last successful row-->
 
 			<j:if test="${it.showLastSuccessfulBuild and table.lastSuccessfulRow != null}">
 				<tr id="row-${table.lastSuccessfulRow.getName()}" class="lastSuccessfulRow ${table.lastSuccessfulRow.isHighlighted() ? 'highlighted' : ''}">
+					<j:if test="${customColumn != null}">
+						<td class="customColumn">
+							<st:include page="cell.jelly" it="${customColumn}"/>
+						</td>
+					</j:if>
 					<td class="custom">
-						<div class="lastSuccessHeader">Last Success <span class="timestamp">(${table.lastSuccessfulRow.first.sinceTimestamp})</span></div>
+						<div class="lastSuccessHeader">Last Success <span class="timestamp">(${table.lastSuccessfulRow.first.sinceTimestamp} ago)</span></div>
 						<j:if test="${table.lastSuccessfulRow.getHasMultiple()}">
 							<img id="multipleCommitters" src="${rootURL}/plugin/PipelineDashboard/multiple_committers.png" />
 						</j:if>
@@ -82,6 +99,14 @@
 
 			<j:forEach items="${table.rows}" var="row" indexVar="i">
 				<tr id="row-${row.getName()}" class="${row.isHighlighted() ? 'highlighted' : ''}">
+					<j:if test="${customColumn != null}">
+						<td class="customColumn">
+							${customColumn.beforeRow(row)}
+							<st:include page="cell.jelly" it="${customColumn}"/>
+							${customColumn.afterRow(row)}
+						</td>
+					</j:if>
+
 					<td class="custom">
 						<j:if test="${row.getHasMultiple()}">
 							<img id="multipleCommitters" src="${rootURL}/plugin/PipelineDashboard/multiple_committers.png" />
@@ -112,5 +137,9 @@
 			</j:forEach>
 		</table>
 		<div class="embedded bottom">${it.bottomEmbedded}</div>
+		<j:if test="${customColumn != null}">
+			<st:include page="bottom.jelly" it="${customColumn}"/>
+			${customColumn.afterTable(table)}
+		</j:if>
 	</div>
 </j:jelly>

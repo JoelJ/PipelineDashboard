@@ -1,0 +1,9 @@
+<j:jelly xmlns:j="jelly:core">
+	<style>
+		th.customColumn,
+		td.customColumn {
+			max-width: 0px;
+		}
+	</style>
+	<span>top.jelly</span>
+</j:jelly>

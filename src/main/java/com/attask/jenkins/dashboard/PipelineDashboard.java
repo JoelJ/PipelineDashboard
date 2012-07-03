@@ -1,6 +1,7 @@
 package com.attask.jenkins.dashboard;
 
 import hudson.Extension;
+import hudson.ExtensionList;
 import hudson.model.*;
 import hudson.scm.ChangeLogSet;
 import hudson.tasks.test.AbstractTestResultAction;
@@ -21,7 +22,7 @@ import java.util.regex.Pattern;
 
 /**
  * A view that shows a table of builds that are related (determined by build description and a regex).
- *
+ * <p/>
  * User: joeljohnson
  * Date: 2/9/12
  * Time: 9:56 AM
@@ -44,12 +45,13 @@ public class PipelineDashboard extends View {
 	private List<JobColumn> jobColumns;
 	private String testUpdateRegex;
 	private int failureRegexGroup;
+	private String customColumn;
 
 	@DataBoundConstructor
 	public PipelineDashboard(String name) {
 		super(name);
 	}
-	
+
 	@SuppressWarnings("UnusedDeclaration")
 	public static Collection<String> getAllJobs() {
 		return Jenkins.getInstance().getJobNames();
@@ -80,7 +82,7 @@ public class PipelineDashboard extends View {
 		}
 
 		this.firstColumnName = request.getParameter("_.firstColumnName");
-		
+
 		this.showBuildName = "on".equals(request.getParameter("_.showBuildName"));
 		this.showFailureCount = "on".equals(request.getParameter("_.showFailureCount"));
 		this.clickForCommitDetails = "on".equals(request.getParameter("_.clickForCommitDetails"));
@@ -102,12 +104,15 @@ public class PipelineDashboard extends View {
 		} else {
 			this.failureRegexGroup = -1;
 		}
+
+		this.customColumn = request.getParameter("_.customColumn");
 	}
 
 	/**
 	 * Finds all the builds that matches the criteria in the settings and organizes them in rows and columns.
+	 *
 	 * @return The list of Rows. Each row containing information about builds whose descriptions match based on the
-	 * 			regex provided. The list is sorted by build date starting with the most recent.
+	 *         regex provided. The list is sorted by build date starting with the most recent.
 	 */
 	@SuppressWarnings("UnusedDeclaration")
 	@Exported
@@ -126,7 +131,7 @@ public class PipelineDashboard extends View {
 
 	protected Map<String, Run[]> findMatchingBuilds(ItemGroup<TopLevelItem> jenkins, List<JobColumn> jobs, String descriptionRegex, int descriptionRegexGroup) {
 		if(jenkins == null || jobs == null || descriptionRegex == null) return Collections.emptyMap();
-		
+
 		Map<String, Run[]> map = new HashMap<String, Run[]>();
 		for (JobColumn jobName : jobs) {
 			try {
@@ -174,7 +179,7 @@ public class PipelineDashboard extends View {
 	protected Table generateRowData(String rootUrl, User currentUser, Map<String, Run[]> map, boolean showBuildName, boolean showFailureCount) {
 		if(rootUrl == null) rootUrl = "";
 		if(map == null) return Table.EMPTY_TABLE;
-		
+
 		SortedSet<Row> rows = new TreeSet<Row>(new Comparator<Row>() {
 			public int compare(Row row1, Row row2) {
 				if(row1 == row2) return 0;
@@ -212,7 +217,7 @@ public class PipelineDashboard extends View {
 						}
 
 						String rowDisplayName = "";
-						
+
 						if(showBuildName && build.getDisplayName() != null) {
 							rowDisplayName = build.getDisplayName();
 						}
@@ -252,7 +257,7 @@ public class PipelineDashboard extends View {
 
 		int i = 0;
 		for (Row row : rows) {
-			if(lastSuccessfulRow == null && row.isPassed(jobColumns)) {
+			if(lastSuccessfulRow == null && row.isPassed()) {
 				lastSuccessfulRow = row;
 			}
 
@@ -343,12 +348,13 @@ public class PipelineDashboard extends View {
 				}
 			}
 		}
-		
+
 		return false;
 	}
 
 	/**
 	 * Generates a flat string
+	 *
 	 * @param collection The collection to combine
 	 * @param separator The string to separate each element with
 	 * @return The toString of each element of the given collection, separated by the given separator.
@@ -492,6 +498,32 @@ public class PipelineDashboard extends View {
 	@Exported
 	public int getFailureRegexGroup() {
 		return failureRegexGroup;
+	}
+
+	@Exported
+	public String getCustomColumn() {
+		return customColumn;
+	}
+
+	public ExtensionList<CustomColumn> allCustomColumns() {
+		return CustomColumn.all();
+	}
+
+	public CustomColumn createCustomColumn() {
+		if (getCustomColumn() == null || getCustomColumn().isEmpty()) {
+			return null;
+		}
+		try {
+			Class<? extends CustomColumn> customColumnClass = (Class<? extends CustomColumn>) Class.forName(getCustomColumn());
+			return customColumnClass.newInstance();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Extension
