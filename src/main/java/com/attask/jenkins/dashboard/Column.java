@@ -1,6 +1,8 @@
 package com.attask.jenkins.dashboard;
 
 import hudson.Util;
+import hudson.model.Build;
+import hudson.model.Run;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
@@ -15,6 +17,7 @@ import java.util.GregorianCalendar;
  */
 @ExportedBean
 public class Column {
+	private final String buildId;
 	private final JobColumn columnHeader;
 	private final String name;
 	private final int failureCount;
@@ -28,7 +31,8 @@ public class Column {
 		return new Column(jobHeader);
 	}
 
-	private Column(JobColumn columnHeader, String name, int failureCount, String url, String buildStatusUrl, boolean isEmpty, long timestamp) {
+	private Column(Run build, JobColumn columnHeader, String name, int failureCount, String url, String buildStatusUrl, boolean isEmpty, long timestamp) {
+		this.buildId = build.getExternalizableId();
 		this.columnHeader = columnHeader;
 		this.name = name;
 		this.failureCount = failureCount;
@@ -39,12 +43,20 @@ public class Column {
 		this.timestamp = timestamp;
 	}
 
-	public Column(JobColumn columnHeader, String name, int failureCount, String url, String buildStatusUrl, long timestamp) {
-		this(columnHeader, name, failureCount, url, buildStatusUrl, false, timestamp);
+	public Column(Run build, JobColumn columnHeader, String name, int failureCount, String url, String buildStatusUrl, long timestamp) {
+		this(build, columnHeader, name, failureCount, url, buildStatusUrl, false, timestamp);
 	}
 
 	private Column(JobColumn column) {
-		this(column, "", -1, "", "", true, -1);
+		this(null, column, "", -1, "", "", true, -1);
+	}
+
+	@Exported
+	public Run getBuild() {
+		if(buildId == null) {
+			return null;
+		}
+		return Run.fromExternalizableId(buildId);
 	}
 
 	@Exported

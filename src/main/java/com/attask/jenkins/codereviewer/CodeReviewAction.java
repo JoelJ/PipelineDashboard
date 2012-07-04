@@ -75,7 +75,7 @@ public class CodeReviewAction extends BaseCodeReviewAction {
 			author = User.current();
 		}
 		Review review = new Review(date, status, message, author);
-		toAddTo.add(review);
+		toAddTo.add(0, review);
 		findBuild().save();
 	}
 

@@ -1,0 +1,21 @@
+<j:jelly xmlns:j="jelly:core">
+	<style>
+		th.customColumn,
+		td.customColumn {
+			width: 52px;
+		}
+
+		img.review,
+		img.verify {
+			padding: 1px;
+		}
+
+		img.review {
+			float: left;
+		}
+
+		img.verify {
+			float: right;
+		}
+	</style>
+</j:jelly>

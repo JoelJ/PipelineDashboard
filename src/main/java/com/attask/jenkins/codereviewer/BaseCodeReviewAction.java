@@ -29,7 +29,7 @@ public abstract class BaseCodeReviewAction implements Action {
 	}
 
 	public String getIconFileName() {
-		return "/plugin/PipelineDashboard/codereview.png";
+		return null;
 	}
 
 	public String getDisplayName() {

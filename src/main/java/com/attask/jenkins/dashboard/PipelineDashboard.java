@@ -229,7 +229,7 @@ public class PipelineDashboard extends View {
 
 						BallColor ballColor = getBuildStatusColor(build, failureCount);
 
-						columns.add(new Column(columnHeader, rowDisplayName, failureCount, build.getUrl(), rootUrl + "/static/832a5f9d/images/" + ORB_SIZE + "/" + ballColor.getImage(), build.getTimeInMillis()));
+						columns.add(new Column(build, columnHeader, rowDisplayName, failureCount, build.getUrl(), rootUrl + "/static/832a5f9d/images/" + ORB_SIZE + "/" + ballColor.getImage(), build.getTimeInMillis()));
 
 						//noinspection StringEquality
 						if(displayName == rowName && build.getDescription() != null && !build.getDescription().trim().isEmpty()) { // I really do want to do reference equals and not value equals.
