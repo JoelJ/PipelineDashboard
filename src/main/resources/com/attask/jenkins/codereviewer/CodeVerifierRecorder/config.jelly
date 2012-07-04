@@ -1,0 +1,14 @@
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
+	<f:entry title="Project to review" field="projectName">
+		<f:textbox/>
+	</f:entry>
+	<f:entry title="Build to review" field="buildNumber">
+		<f:textbox/>
+	</f:entry>
+	<f:entry title="Neutral Threshold" field="failuresBeforeNoReview">
+		<f:textbox/>
+	</f:entry>
+	<f:entry title="Rejected Threshold" field="failuresBeforeReject">
+		<f:textbox/>
+	</f:entry>
+</j:jelly>
