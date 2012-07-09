@@ -1,0 +1,89 @@
+.review {
+    border: 1px solid black;
+
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    margin-top: 5px;
+    margin-bottom: 5px;
+
+    max-width: 500px;
+}
+
+.verifications ul,
+.reviews ul {
+    padding-left: 0;
+}
+
+.review .message {
+    display: block;
+}
+
+.review .author {
+    display: block;
+    font-style: italic;
+}
+
+.review .date {
+    font-size: smaller;
+    margin-left: 5px;
+}
+
+.review .message::before {
+    content: '“';
+}
+
+.review .message::after {
+    content: '”';
+}
+
+.review .author::before {
+    content: "~";
+}
+
+.review.Accepted {
+    border-color: black;
+}
+.review.Accepted .status {
+    color: green;
+    font-weight: bold;
+}
+
+.review.Rejected {
+    border-color: red;
+}
+
+.review.Rejected .status {
+    color: red;
+    font-weight: bold;
+}
+
+.review.NotReviewed {
+    border-color: lightgray;
+    color: gray;
+}
+
+.review.NotReviewed .status {
+    font-weight: bold;
+}
+
+#newReviewForm select,
+#newReviewForm textarea {
+    display: block;
+}
+
+#BaseCodeReviewAction .empty {
+    color: lightgray;
+    font-size: larger;
+    margin-left: 50px;
+}
+
+.verifications h2,
+.reviews h2 {
+    background-repeat: no-repeat;
+    padding-left: 24px;
+    height: 24px;
+}
+
