@@ -39,11 +39,13 @@
 		<!--made it a div because having it in a form caused an error on submit-->
 		<div id="newReviewForm">
 			<h3>New Review</h3>
-			<select name="status">
+			<div class="status">
 				<j:forEach var="status" items="${it.getStatuses()}">
-					<option value="${status}">${status}</option>
+                    <input type="radio" value="${status}" name="status" id="${status}"></input>
+                    <label for="${status}">${status}</label>
+                    <!--<option value="${status}">${status}</option>-->
 				</j:forEach>
-			</select>
+			</div>
 
 			<label name="message" value="Message"/>
 			<textarea name="message"></textarea>
@@ -53,11 +55,20 @@
 	</div>
 	<script>
 		$('newReviewButton').observe('click', function(e) {
+            debugger;
 			var message = $('newReviewForm').down('textarea[name=message]');
-			var status = $('newReviewForm').down('select[name=status]');
+
+            var statusRadio;
+            var statusRadios = $$("#newReviewForm .status input");
+            for(var i = 0; i &lt; statusRadios.length; i++) {
+                if(statusRadios[i].checked) {
+                    statusRadio = statusRadios[i];
+                    break;
+                }
+            }
 
 			var messageValue = message.value;
-			var statusValue = status.value;
+			var statusValue = statusRadio.value;
 
 		console.log(messageValue, statusValue);
 

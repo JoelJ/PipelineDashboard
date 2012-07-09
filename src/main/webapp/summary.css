@@ -87,3 +87,14 @@
     height: 24px;
 }
 
+#newReviewForm {
+    /*margin-left: 50px;*/
+    /*margin-right: 50px;*/
+    max-width: 500px;
+
+}
+
+#newReviewForm textarea{
+    width: 100%;
+    height: 100px;
+}
