@@ -107,7 +107,7 @@
 	</style>
 	<div id="BaseCodeReviewAction">
 		<div class="verifications ${it.calculateVerifiedStatus()}">
-			<h2>Verifications</h2>
+			<h2><a name="verifications">Verifications</a></h2>
 			<j:if test="${it.getVerifyList().isEmpty()}">
 				<div class="empty">None</div>
 			</j:if>
@@ -118,7 +118,7 @@
 			</ul>
 		</div>
 		<div class="reviews ${it.calculateReviewStatus()}">
-			<h2>Reviews</h2>
+			<h2><a name="reviews">Reviews</a></h2>
 			<j:if test="${it.getReviewList().isEmpty()}">
 				<div class="empty">None</div>
 			</j:if>

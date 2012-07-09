@@ -2,22 +2,25 @@
 	<j:set var="reviewStatus" value="${it.reviewAction.calculateReviewStatus()}"/>
 	<j:set var="verifyStatus" value="${it.reviewAction.calculateVerifiedStatus()}"/>
 
-	<j:if test="${reviewStatus == 'Rejected'}">
-		<img class="review" src="${rootURL}/plugin/PipelineDashboard/thumbdown.png" title="${it.reviewTitle}" />
-	</j:if>
-	<j:if test="${reviewStatus == 'Accepted'}">
-		<img class="review" src="${rootURL}/plugin/PipelineDashboard/thumbup.gif" title="${it.reviewTitle}" />
-	</j:if>
+	<a href="${it.currentBuild.url}#reviews">
+        <j:if test="${reviewStatus == 'Rejected'}">
+            <img class="review" src="${rootURL}/plugin/PipelineDashboard/thumbdown.png" title="${it.reviewTitle}" />
+        </j:if>
+        <j:if test="${reviewStatus == 'Accepted'}">
+            <img class="review" src="${rootURL}/plugin/PipelineDashboard/thumbup.gif" title="${it.reviewTitle}" />
+        </j:if>
+    </a>
 	<!--<j:if test="${reviewStatus == 'NotReviewed'}">-->
 		<!--<img class="review" src="${rootURL}/plugin/PipelineDashboard/neutral.png" />-->
 	<!--</j:if>-->
-
-	<j:if test="${verifyStatus == 'Rejected'}">
-		<img class="verify" src="${rootURL}/plugin/PipelineDashboard/thumbdown.png" title="${it.verifyTitle}" />
-	</j:if>
-	<j:if test="${verifyStatus == 'Accepted'}">
-		<img class="verify" src="${rootURL}/plugin/PipelineDashboard/thumbup.gif" title="${it.verifyTitle}" />
-	</j:if>
+    <a href="${it.currentBuild.url}#verifications">
+        <j:if test="${verifyStatus == 'Rejected'}">
+            <img class="verify" src="${rootURL}/plugin/PipelineDashboard/thumbdown.png" title="${it.verifyTitle}" />
+        </j:if>
+        <j:if test="${verifyStatus == 'Accepted'}">
+            <img class="verify" src="${rootURL}/plugin/PipelineDashboard/thumbup.gif" title="${it.verifyTitle}" />
+        </j:if>
+    </a>
 	<!--<j:if test="${verifyStatus == 'NotReviewed'}">-->
 		<!--<img class="verify" src="${rootURL}/plugin/PipelineDashboard/neutral.png" />-->
 	<!--</j:if>-->
