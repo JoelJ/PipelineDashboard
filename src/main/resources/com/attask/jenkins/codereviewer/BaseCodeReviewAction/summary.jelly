@@ -41,9 +41,18 @@
 			<h3>New Review</h3>
 			<div class="status">
 				<j:forEach var="status" items="${it.getStatuses()}">
-                    <input type="radio" value="${status}" name="status" id="${status}"></input>
-                    <label for="${status}">${status}</label>
-                    <!--<option value="${status}">${status}</option>-->
+                    <input type="radio" value="${status}" name="status" id="${status}"/>
+                    <label for="${status}">
+                        <j:if test="${status == 'Accepted'}">
+                            <img src="${rootURL}/plugin/PipelineDashboard/thumbup.gif" title="${status}" />
+                        </j:if>
+                        <j:if test="${status == 'NotReviewed'}">
+                            <img src="${rootURL}/plugin/PipelineDashboard/neutral.png" title="${status}" />
+                        </j:if>
+                        <j:if test="${status == 'Rejected'}">
+                            <img src="${rootURL}/plugin/PipelineDashboard/thumbdown.png" title="${status}" />
+                        </j:if>
+                    </label>
 				</j:forEach>
 			</div>
 
@@ -54,6 +63,8 @@
 		</div>
 	</div>
 	<script>
+        <!--$$('#newReviewForm input#NotReviewed')[0].click(); // select the NotReviewed by default-->
+
 		$('newReviewButton').observe('click', function(e) {
 			var message = $('newReviewForm').down('textarea[name=message]');
 

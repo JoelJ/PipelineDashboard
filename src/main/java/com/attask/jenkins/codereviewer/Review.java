@@ -46,6 +46,6 @@ public class Review {
 	}
 
 	public static enum Status {
-		Accepted, Rejected, NotReviewed
+		Accepted, NotReviewed, Rejected
 	}
 }
