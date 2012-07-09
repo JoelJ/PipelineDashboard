@@ -55,7 +55,6 @@
 	</div>
 	<script>
 		$('newReviewButton').observe('click', function(e) {
-            debugger;
 			var message = $('newReviewForm').down('textarea[name=message]');
 
             var statusRadio;
@@ -69,8 +68,6 @@
 
 			var messageValue = message.value;
 			var statusValue = statusRadio.value;
-
-		console.log(messageValue, statusValue);
 
 			new Ajax.Request('codeReview/review', {
 				method: 'post',
