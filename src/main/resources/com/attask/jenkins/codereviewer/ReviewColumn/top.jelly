@@ -5,17 +5,31 @@
 			width: 52px;
 		}
 
-		img.review,
-		img.verify {
-			padding: 1px;
+        td.customColumn .review,
+        td.customColumn .verify {
+			margin: 1px;
+            width: 26px;
+            height: 26px;
 		}
 
-		img.review {
+        td.customColumn .review {
 			float: left;
 		}
 
-		img.verify {
+        td.customColumn .verify {
 			float: right;
 		}
-	</style>
+
+        td.customColumn .exclamation {
+            background-color: white;
+            border: solid red 1px;
+            border-radius: 3px;
+            color: red;
+            font-size: 20px;
+            font-weight: bold;
+            height: 23px;
+            padding-top:2px;
+            text-align: center;
+        }
+    </style>
 </j:jelly>

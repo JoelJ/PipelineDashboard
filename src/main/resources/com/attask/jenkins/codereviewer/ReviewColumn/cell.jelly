@@ -2,26 +2,30 @@
 	<j:set var="reviewStatus" value="${it.reviewAction.calculateReviewStatus()}"/>
 	<j:set var="verifyStatus" value="${it.reviewAction.calculateVerifiedStatus()}"/>
 
-	<a href="${it.currentBuild.url}#reviews">
-        <j:if test="${reviewStatus == 'Rejected'}">
-            <img class="review" src="${rootURL}/plugin/PipelineDashboard/thumbdown.png" title="${it.reviewTitle}" />
-        </j:if>
-        <j:if test="${reviewStatus == 'Accepted'}">
-            <img class="review" src="${rootURL}/plugin/PipelineDashboard/thumbup.gif" title="${it.reviewTitle}" />
-        </j:if>
+    <a href="${it.currentBuild.url}#reviews">
+        <j:choose>
+            <j:when test="${reviewStatus == 'Rejected'}">
+                <img class="review" src="${rootURL}/plugin/PipelineDashboard/thumbdown.png" title="${it.reviewTitle}" />
+            </j:when>
+            <j:when test="${reviewStatus == 'Accepted'}">
+                <img class="review" src="${rootURL}/plugin/PipelineDashboard/thumbup.gif" title="${it.reviewTitle}" />
+            </j:when>
+            <j:otherwise>
+                <span class="review exclamation" title="This has not been reviewed yet!">!</span>
+            </j:otherwise>
+        </j:choose>
     </a>
-	<!--<j:if test="${reviewStatus == 'NotReviewed'}">-->
-		<!--<img class="review" src="${rootURL}/plugin/PipelineDashboard/neutral.png" />-->
-	<!--</j:if>-->
     <a href="${it.currentBuild.url}#verifications">
-        <j:if test="${verifyStatus == 'Rejected'}">
-            <img class="verify" src="${rootURL}/plugin/PipelineDashboard/thumbdown.png" title="${it.verifyTitle}" />
-        </j:if>
-        <j:if test="${verifyStatus == 'Accepted'}">
-            <img class="verify" src="${rootURL}/plugin/PipelineDashboard/thumbup.gif" title="${it.verifyTitle}" />
-        </j:if>
+        <j:choose>
+            <j:when test="${verifyStatus == 'Rejected'}">
+                <img class="verify" src="${rootURL}/plugin/PipelineDashboard/thumbdown.png" title="${it.verifyTitle}" />
+            </j:when>
+            <j:when test="${verifyStatus == 'Accepted'}">
+                <img class="verify" src="${rootURL}/plugin/PipelineDashboard/thumbup.gif" title="${it.verifyTitle}" />
+            </j:when>
+            <j:otherwise>
+                <span class="verify exclamation" title="This has not been verified by Jenkins!">!</span>
+            </j:otherwise>
+        </j:choose>
     </a>
-	<!--<j:if test="${verifyStatus == 'NotReviewed'}">-->
-		<!--<img class="verify" src="${rootURL}/plugin/PipelineDashboard/neutral.png" />-->
-	<!--</j:if>-->
 </j:jelly>
