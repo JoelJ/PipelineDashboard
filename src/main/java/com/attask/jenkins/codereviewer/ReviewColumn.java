@@ -15,9 +15,13 @@ import hudson.model.User;
  */
 @Extension
 public class ReviewColumn extends CustomColumn {
-	public Run currentBuild;
+	private Run currentBuild;
 
-	@Override
+    public Run getCurrentBuild() {
+        return currentBuild;
+    }
+
+    @Override
 	public String getHeaderName() {
 		return "Review";
 	}
