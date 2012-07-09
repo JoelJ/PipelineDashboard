@@ -2,7 +2,7 @@
 	<style>
 		th.customColumn,
 		td.customColumn {
-			width: 52px;
+			width: 60px;
 		}
 
         td.customColumn .review,
@@ -19,17 +19,5 @@
         td.customColumn .verify {
 			float: right;
 		}
-
-        td.customColumn .exclamation {
-            background-color: white;
-            border: solid red 1px;
-            border-radius: 3px;
-            color: red;
-            font-size: 20px;
-            font-weight: bold;
-            height: 23px;
-            padding-top:2px;
-            text-align: center;
-        }
     </style>
 </j:jelly>

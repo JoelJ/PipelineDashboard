@@ -3,7 +3,7 @@
     <style>
         .verifications.Accepted h2,
         .reviews.Accepted h2 {
-        background-image: url('${rootURL}/plugin/PipelineDashboard/thumbup.gif');
+        background-image: url('${rootURL}/plugin/PipelineDashboard/thumbup.png');
         }
 
         .verifications.Rejected h2 ,
@@ -44,7 +44,7 @@
                     <input type="radio" value="${status}" name="status" id="${status}"/>
                     <label for="${status}">
                         <j:if test="${status == 'Accepted'}">
-                            <img src="${rootURL}/plugin/PipelineDashboard/thumbup.gif" title="Accept the build" />
+                            <img src="${rootURL}/plugin/PipelineDashboard/thumbup.png" title="Accept the build" />
                         </j:if>
                         <j:if test="${status == 'NotReviewed'}">
                             <img src="${rootURL}/plugin/PipelineDashboard/neutral.png" title="Write a review without accepting or rejecting the build" />

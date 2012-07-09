@@ -8,10 +8,10 @@
                 <img class="review" src="${rootURL}/plugin/PipelineDashboard/thumbdown.png" title="${it.reviewTitle}" />
             </j:when>
             <j:when test="${reviewStatus == 'Accepted'}">
-                <img class="review" src="${rootURL}/plugin/PipelineDashboard/thumbup.gif" title="${it.reviewTitle}" />
+                <img class="review" src="${rootURL}/plugin/PipelineDashboard/thumbup.png" title="${it.reviewTitle}" />
             </j:when>
             <j:otherwise>
-                <span class="review exclamation" title="This has not been reviewed yet!">!</span>
+                <img class="verify" src="${rootURL}/plugin/PipelineDashboard/exclamation.png" title="This has not been reviewed yet!" />
             </j:otherwise>
         </j:choose>
     </a>
@@ -21,10 +21,10 @@
                 <img class="verify" src="${rootURL}/plugin/PipelineDashboard/thumbdown.png" title="${it.verifyTitle}" />
             </j:when>
             <j:when test="${verifyStatus == 'Accepted'}">
-                <img class="verify" src="${rootURL}/plugin/PipelineDashboard/thumbup.gif" title="${it.verifyTitle}" />
+                <img class="verify" src="${rootURL}/plugin/PipelineDashboard/thumbup.png" title="${it.verifyTitle}" />
             </j:when>
             <j:otherwise>
-                <span class="verify exclamation" title="This has not been verified by Jenkins!">!</span>
+                <img class="verify" src="${rootURL}/plugin/PipelineDashboard/exclamation.png" title="This has not been verified by Jenkins!" />
             </j:otherwise>
         </j:choose>
     </a>
