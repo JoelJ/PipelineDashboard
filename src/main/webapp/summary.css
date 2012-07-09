@@ -116,3 +116,7 @@
 #newReviewForm .status input:checked + label img {
     opacity: 1.00;
 }
+
+#newReviewForm .hidden-form {
+    display: none;
+}
