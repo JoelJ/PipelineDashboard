@@ -3,7 +3,9 @@
 	<div class="review ${it.status}">
 		<span class="status">${it.status}</span>
 		<span class="date">${it.date}</span>
-		<span class="message">${it.message}</span>
+        <j:if test="${it.message != null and !it.message.isEmpty()}">
+		    <span class="message">${it.message}</span>
+        </j:if>
 		<span class="author">${it.author == null ? 'Some Fool' : (it.author.fullName == 'SYSTEM' ? 'Jenkins' : it.author.fullName)}</span>
 	</div>
 </j:jelly>
