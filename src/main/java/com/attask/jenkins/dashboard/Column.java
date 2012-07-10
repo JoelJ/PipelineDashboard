@@ -32,7 +32,7 @@ public class Column {
 	}
 
 	private Column(Run build, JobColumn columnHeader, String name, int failureCount, String url, String buildStatusUrl, boolean isEmpty, long timestamp) {
-		this.buildId = build.getExternalizableId();
+		this.buildId = build == null ? null : build.getExternalizableId();
 		this.columnHeader = columnHeader;
 		this.name = name;
 		this.failureCount = failureCount;
