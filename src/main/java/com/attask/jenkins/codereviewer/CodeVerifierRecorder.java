@@ -62,27 +62,28 @@ public class CodeVerifierRecorder extends Recorder {
 		Review.Status status;
 		String message;
 
+		String buildDisplayName = build.getFullDisplayName();
 		if(build.getResult() == Result.SUCCESS) {
 			status = Review.Status.Accepted;
-			message = "Build succeeded";
+			message = "Build " + buildDisplayName + " succeeded.";
 		} else if(build.getResult() == Result.UNSTABLE) {
 			int failureCount = findFailureCount(build);
 			if(failureCount < 0) {
 				status = Review.Status.NotReviewed;
-				message = "The build was marked " + build.getResult() + " on " + build.getFullDisplayName() + " but doesn't have a failure count. Not verifying.";
+				message = "The build was marked " + build.getResult() + " on " + buildDisplayName + " but doesn't have a failure count. Not verifying.";
 			} else if(failureCount < failuresBeforeNoReview) {
 				status = Review.Status.Accepted;
-				message = "There were " + failureCount + " failures on "+ build.getFullDisplayName() +". This is within an acceptable range (" + failuresBeforeNoReview + ").";
+				message = "There were " + failureCount + " failures on "+ buildDisplayName +". This is within an acceptable range (" + failuresBeforeNoReview + ").";
 			} else if(failureCount < failuresBeforeReject) {
 				status = Review.Status.NotReviewed;
-				message = "There were " + failureCount + " failures on "+ build.getFullDisplayName() +". This is within a range of concern (" + failuresBeforeNoReview + " - " + failuresBeforeReject + "), but isn't horrible. ";
+				message = "There were " + failureCount + " failures on "+ buildDisplayName +". This is within a range of concern (" + failuresBeforeNoReview + " - " + failuresBeforeReject + "), but isn't horrible. ";
 			} else {
 				status = Review.Status.Rejected;
-				message = "There were " + failureCount + " failures on " + build.getFullDisplayName() + ". This has exceeded the number of acceptable failures (" + failuresBeforeReject + ").";
+				message = "There were " + failureCount + " failures on " + buildDisplayName + ". This has exceeded the number of acceptable failures (" + failuresBeforeReject + ").";
 			}
 		} else {
 			status = Review.Status.Rejected;
-			message = "The result was " + build.getResult();
+			message = "The result was " + build.getResult() + " for " + buildDisplayName;
 		}
 
 		action.addVerification(status, message, new Date(), null);
