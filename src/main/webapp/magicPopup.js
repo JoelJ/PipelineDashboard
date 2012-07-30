@@ -24,8 +24,7 @@ var openPopup = (function(e){
 			document.body.appendChild(div);
 		}
 
-		var siblings = target.siblings();
-		var first = siblings[0];
+        var first = target.up().down(".build");
 		var url = first.getAttribute('url') + "api/json";
 		showContent(div, url, e.clientX + window.scrollX, e.clientY + window.scrollY);
 	}
