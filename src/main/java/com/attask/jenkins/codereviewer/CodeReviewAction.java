@@ -46,12 +46,43 @@ public class CodeReviewAction extends BaseCodeReviewAction {
 	@Override
 	public void doReview(StaplerRequest request, StaplerResponse response,
 						@QueryParameter(required = true) Review.Status status, @QueryParameter(required = true) String message) throws IOException {
-		addReview(status, message, new Date(), User.current());
-
-		response.sendRedirect("..");
+        if (message != null && !message.isEmpty()) {
+            addReview(status, message, new Date(), User.current());
+        }
+        response.sendRedirect("..");
 	}
 
-	/**
+    @Override
+    public void doDeleteReview(StaplerRequest request, StaplerResponse response, @QueryParameter(required = true) String id) throws IOException {
+        deleteR(id);
+
+        response.sendRedirect("..");
+    }
+
+    @Override
+    public void doDeleteVerification(StaplerRequest request, StaplerResponse response, @QueryParameter(required = true) String id) throws IOException {
+        deleteV(id);
+
+        response.sendRedirect("..");
+    }
+
+    public void deleteR(String id){
+        delete(reviewList,id);
+    }
+
+    public void deleteV(String id){
+        delete(verifyList,id);
+    }
+
+    public void delete(List<Review> reviews, String id){
+        for(Review review: reviews){
+            if(review.getId().equals(id)){
+                reviews.remove(review);
+                return;
+            }
+        }
+    }
+    /**
 	 * Adds a new verification to the code review.
 	 * Verifications are meant to be used by other jobs to report the status.
 	 */

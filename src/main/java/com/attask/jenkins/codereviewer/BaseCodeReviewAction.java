@@ -4,11 +4,9 @@ import hudson.model.Action;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
-import org.kohsuke.stapler.export.Exported;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,6 +17,8 @@ import java.util.List;
 public abstract class BaseCodeReviewAction implements Action {
 	public abstract void doVerify(StaplerRequest request, StaplerResponse response, @QueryParameter(required = true) Review.Status status, @QueryParameter(required = true) String message) throws IOException;
 	public abstract void doReview(StaplerRequest request, StaplerResponse response, @QueryParameter(required = true) Review.Status status, @QueryParameter(required = true) String message) throws IOException;
+    public abstract void doDeleteReview(StaplerRequest request, StaplerResponse response, @QueryParameter(required = true) String id) throws IOException;
+    public abstract void doDeleteVerification(StaplerRequest request, StaplerResponse response, @QueryParameter(required = true) String id) throws IOException;
 	public abstract List<Review> getReviewList();
 	public abstract List<Review> getVerifyList();
 	public abstract Review.Status calculateVerifiedStatus();
