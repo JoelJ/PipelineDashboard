@@ -32,11 +32,11 @@
 }
 
 .review .message::before {
-    content: '“';
+    content: '"';
 }
 
 .review .message::after {
-    content: '”';
+    content: '"';
 }
 
 .review .author::before {
