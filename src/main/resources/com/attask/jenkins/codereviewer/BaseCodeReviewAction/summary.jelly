@@ -62,8 +62,11 @@
 				</j:forEach>
 			</div>
             <div class="hidden-form">
+                <j:forEach var="checklistItem" items="${it.getChecklistItems()}">
+                    <input type="checkbox" value="checklistItem" class="checkbox">${checklistItem}</input><br/>
+                </j:forEach>
                 <textarea name="message"></textarea>
-                <input id="newReviewButton" type="submit"/>
+                <input id="newReviewButton" type="submit" disabled="true"/>
             </div>
 		</div>
 	</div>
@@ -105,6 +108,23 @@
                     hiddenForm[0].toggleClassName('hidden-form', false);
                 }
             });
+        });
+        $$(".checkbox").each(function(it){
+            it.observe('click', function(evt){
+                var isChecked = true;
+                $$(".checkbox").each(function(it){
+                if(!it.checked){
+                    isChecked=false;
+                }
+            });
+            if(isChecked){
+
+                $("newReviewButton").removeAttribute("disabled");
+            }
+            if(!isChecked){
+                $("newReviewButton").setAttribute("disabled", true);
+            }
+        });
         });
 	</script>
 </j:jelly>
