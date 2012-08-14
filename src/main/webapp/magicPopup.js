@@ -24,7 +24,7 @@ var openPopup = (function(e){
 			document.body.appendChild(div);
 		}
 
-        var first = target.up().down(".build");
+		var first = target.up().down(".build");
 		var url = first.getAttribute('url') + "api/json";
 		showContent(div, url, e.clientX + window.scrollX, e.clientY + window.scrollY);
 	}
@@ -62,12 +62,13 @@ var showContent = (function(element, url, x, y) {
 
 			var html = '<div class="header">Revisions Included in Run</div>';
 			changeSet.each(function(it) {
+				var hash = it.id.replace('<','&lt;');
 				html += '<hr/>';
 				html += '<div class="commit">';
-				html += 	'<div>Revision: <span class="revision">'+it.id+'</span></div>';
-				html += 	'<div>Author: <span class="author">'+it.author.fullName+'</span></div>';
-				html += 	'<div>Date: <span class="comment">'+it.date +"</span></div>";
-				html += 	'<div>Comment: "<span class="comment">'+it.comment.trim().replace('\n', '<br/>')+'</span>"</div>';
+				html += 	'<div>Revision: <span class="revision"><a href="http://git.ops.ut.us.attask.com/git/?p=attask.git;a=commit;h='+hash+'">'+hash+'</a></span></div>';
+				html += 	'<div>Author: <span class="author">'+it.author.fullName.replace('<','&lt;')+'</span></div>';
+				html += 	'<div>Date: <span class="comment">'+it.date.replace('<','&lt;') +"</span></div>";
+				html += 	'<div>Comment: <span class="comment"><pre>'+it.comment.trim().replace('<','&lt;')+'</pre></span></div>';
 				html += '</div>';
 			});
 
