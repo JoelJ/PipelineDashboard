@@ -47,12 +47,21 @@ public class MirroredCodeReviewAction extends BaseCodeReviewAction {
 	}
 
     @Override
-    public void doDelete(StaplerRequest request, StaplerResponse response, @QueryParameter(required = true) String id) throws IOException {
-        CodeReviewAction action=findMirroredAction();
-        if(action == null){
-            throw new IOException(projectToMirror + " doesn't have an reviewable build that matches " + buildDescriptionToMirror);
+    public void doDeleteReview(StaplerRequest request, StaplerResponse response, @QueryParameter(required = true) String id) throws IOException {
+        CodeReviewAction action = findMirroredAction();
+        if(action == null) {
+            throw new IOException(projectToMirror + " doesn't have an deletable review that matches " + buildDescriptionToMirror);
         }
-        action.doDelete(request,response,id);
+        action.doDeleteReview(request, response, id);
+    }
+
+    @Override
+    public void doDeleteVerification(StaplerRequest request, StaplerResponse response, @QueryParameter(required = true) String id) throws IOException {
+        CodeReviewAction action = findMirroredAction();
+        if(action == null) {
+            throw new IOException(projectToMirror + " doesn't have an deletable review that matches " + buildDescriptionToMirror);
+        }
+        action.doDeleteVerification(request, response, id);
     }
 
     public Run findBuild() {

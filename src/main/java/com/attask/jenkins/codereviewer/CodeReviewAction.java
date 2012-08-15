@@ -32,7 +32,7 @@ import java.util.logging.Logger;
 public class CodeReviewAction extends BaseCodeReviewAction {
 	private int requiredReviews;
 	private int requiredVerifies;
-    private String[] checklistItems;
+    private List<String> checklistItems;
 
     public static Logger LOGGER = Logger.getLogger(CodeReviewAction.class.getSimpleName());
 	private final String buildId;
@@ -44,7 +44,9 @@ public class CodeReviewAction extends BaseCodeReviewAction {
 		this.buildId = build.getExternalizableId();
 		this.requiredReviews = requiredReviews;
 		this.requiredVerifies = requiredVerifies;
-        this.checklistItems =checkListItems;
+        if(checkListItems!=null){
+            Collections.addAll(this.checklistItems, checkListItems);
+        }
 		this.reviewList = new ArrayList<Review>();
 		this.verifyList = new ArrayList<Review>();
         this.userList=new HashSet<User>();
@@ -302,7 +304,7 @@ public class CodeReviewAction extends BaseCodeReviewAction {
 		return buildId;
 	}
 
-    public String[] getChecklistItems() {
+    public List<String> getChecklistItems() {
         return checklistItems;
     }
 }

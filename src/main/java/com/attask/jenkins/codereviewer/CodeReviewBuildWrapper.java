@@ -30,7 +30,9 @@ public class CodeReviewBuildWrapper extends BuildWrapper {
 	}
 
     private String[] makeCheckListItems(String checkListItems) {
-        return checkListItems.split("\n");
+        if(!checkListItems.isEmpty())
+            return checkListItems.split("\n");
+        return null;
     }
 
     @Override

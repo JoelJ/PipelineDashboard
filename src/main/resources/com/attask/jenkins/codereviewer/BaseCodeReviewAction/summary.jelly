@@ -62,11 +62,21 @@
 				</j:forEach>
 			</div>
             <div class="hidden-form">
-                <j:forEach var="checklistItem" items="${it.getChecklistItems()}">
-                    <input type="checkbox" value="checklistItem" class="checkbox">${checklistItem}</input><br/>
-                </j:forEach>
+                <j:set var="checklistItems" value="${it.getChecklistItems()}"/>
+                <j:if test="${checklistItems!=null and !checklistItems.get(0).isEmpty()}">
+                    <j:forEach var="checklistItem" items="${checklistItems}">
+                        <input type="checkbox" value="checklistItem" class="checkbox">${checklistItem}</input><br/>
+                    </j:forEach>
+                </j:if>
                 <textarea name="message"></textarea>
-                <input id="newReviewButton" type="submit" disabled="true"/>
+                <j:choose>
+                    <j:when test="${checklistItems!=null and !checklistItems.get(0).isEmpty()}">
+                        <input id="newReviewButton" type="submit" disabled="true" />
+                    </j:when>
+                    <j:otherwise>
+                        <input id="newReviewButton" type="submit" />
+                    </j:otherwise>
+                </j:choose>
             </div>
 		</div>
 	</div>
