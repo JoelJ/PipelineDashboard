@@ -1,10 +1,13 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 	<div class="review ${it.status}">
+	    <input class="delete" type="image" src="${rootURL}/plugin/PipelineDashboard/delete.png"/>
 		<span class="status">${it.status}</span>
 		<span class="date">${it.date}</span>
         <j:if test="${it.message != null and !it.message.isEmpty()}">
-		    <span class="message">${it.message}</span>
+		    <span class="message">
+		        <pre>${it.message}</pre>
+		    </span>
         </j:if>
 		<span class="author">${it.author == null ? 'Some Fool' : (it.author.fullName == 'SYSTEM' ? 'Jenkins' : it.author.fullName)}</span>
 	</div>

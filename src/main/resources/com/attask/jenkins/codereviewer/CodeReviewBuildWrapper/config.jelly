@@ -5,4 +5,7 @@
 	<f:entry title="Required verifies for acceptance" field="requiredVerifies">
 		<f:textbox/>
 	</f:entry>
+    <f:entry title="Checklist items for acceptance (new line separated)" field="checklistItems">
+        <f:textarea/>
+    </f:entry>
 </j:jelly>

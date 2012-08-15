@@ -8,7 +8,6 @@ import org.kohsuke.stapler.StaplerResponse;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,7 +46,25 @@ public class MirroredCodeReviewAction extends BaseCodeReviewAction {
 		action.doReview(request, response, status, message);
 	}
 
-	public Run findBuild() {
+    @Override
+    public void doDeleteReview(StaplerRequest request, StaplerResponse response, @QueryParameter(required = true) String id) throws IOException {
+        CodeReviewAction action = findMirroredAction();
+        if(action == null) {
+            throw new IOException(projectToMirror + " doesn't have an deletable review that matches " + buildDescriptionToMirror);
+        }
+        action.doDeleteReview(request, response, id);
+    }
+
+    @Override
+    public void doDeleteVerification(StaplerRequest request, StaplerResponse response, @QueryParameter(required = true) String id) throws IOException {
+        CodeReviewAction action = findMirroredAction();
+        if(action == null) {
+            throw new IOException(projectToMirror + " doesn't have an deletable review that matches " + buildDescriptionToMirror);
+        }
+        action.doDeleteVerification(request, response, id);
+    }
+
+    public Run findBuild() {
 		return Run.fromExternalizableId(getBuildId());
 	}
 

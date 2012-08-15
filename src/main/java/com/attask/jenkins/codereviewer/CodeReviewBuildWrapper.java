@@ -20,14 +20,22 @@ import java.io.IOException;
 public class CodeReviewBuildWrapper extends BuildWrapper {
 	private final String requiredReviews;
 	private final String requiredVerifies;
+    private final String[] checkListItems;
 
 	@DataBoundConstructor
-	public CodeReviewBuildWrapper(String requiredReviews, String requiredVerifies) {
+	public CodeReviewBuildWrapper(String requiredReviews, String requiredVerifies,String checklistItems) {
 		this.requiredReviews = requiredReviews;
 		this.requiredVerifies = requiredVerifies;
+        this.checkListItems=makeCheckListItems(checklistItems);
 	}
 
-	@Override
+    private String[] makeCheckListItems(String checkListItems) {
+        if(!checkListItems.isEmpty())
+            return checkListItems.split("\n");
+        return null;
+    }
+
+    @Override
 	public Environment setUp(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException, InterruptedException {
 		EnvVars envVars = build.getEnvironment(listener);
 		String requiredReviewsExpanded = envVars.expand(this.requiredReviews);
@@ -36,7 +44,7 @@ public class CodeReviewBuildWrapper extends BuildWrapper {
 		int requiredReviews = parseInt(requiredReviewsExpanded, listener);
 		int requiredVerifies = parseInt(requiredVerifiesExpanded, listener);
 
-		build.addAction(new CodeReviewAction(build, requiredReviews, requiredVerifies));
+		build.addAction(new CodeReviewAction(build, requiredReviews, requiredVerifies,checkListItems));
 		return new Environment() {
 			@Override
 			public boolean tearDown(AbstractBuild build, BuildListener listener) throws IOException, InterruptedException {
@@ -64,7 +72,11 @@ public class CodeReviewBuildWrapper extends BuildWrapper {
 		return requiredVerifies;
 	}
 
-	@Extension
+    public String[] getCheckListItems() {
+        return checkListItems;
+    }
+
+    @Extension
 	public static class DescriptorImpl extends BuildWrapperDescriptor {
 		@Override
 		public boolean isApplicable(AbstractProject<?, ?> item) {

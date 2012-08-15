@@ -25,6 +25,10 @@ public class Review {
 		this.author = author;
 	}
 
+    @Exported
+    public String getId(){
+        return date.toString();
+    }
 	@Exported
 	public Date getDate() {
 		return date;

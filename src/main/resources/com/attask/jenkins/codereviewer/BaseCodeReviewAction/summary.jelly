@@ -19,10 +19,14 @@
 				<div class="empty">None</div>
 			</j:if>
 			<ul>
-				<j:forEach var="review" items="${it.getVerifyList()}">
-					<st:include page="main.jelly" it="${review}"/>
-				</j:forEach>
+
+                    <j:forEach var="review" items="${it.getVerifyList()}">
+                	    <form method="POST" action="codeReview/deleteVerification?id=${review.id}">
+                            <st:include page="main.jelly" it="${review}"/>
+                        </form>
+                    </j:forEach>
 			</ul>
+
 		</div>
 		<div class="reviews ${it.calculateReviewStatus()}">
 			<h2><a name="reviews">Reviews</a></h2>
@@ -30,9 +34,11 @@
 				<div class="empty">None</div>
 			</j:if>
 			<ul>
-				<j:forEach var="review" items="${it.getReviewList()}">
-					<st:include page="main.jelly" it="${review}"/>
-				</j:forEach>
+                    <j:forEach var="review" items="${it.getReviewList()}">
+                        <form method="POST" action="codeReview/deleteReview?id=${review.id}">
+                            <st:include page="main.jelly" it="${review}"/>
+                        </form>
+                    </j:forEach>
 			</ul>
 		</div>
 
@@ -56,8 +62,21 @@
 				</j:forEach>
 			</div>
             <div class="hidden-form">
+                <j:set var="checklistItems" value="${it.getChecklistItems()}"/>
+                <j:if test="${checklistItems!=null and !checklistItems.get(0).isEmpty()}">
+                    <j:forEach var="checklistItem" items="${checklistItems}">
+                        <input type="checkbox" value="checklistItem" class="checkbox">${checklistItem}</input><br/>
+                    </j:forEach>
+                </j:if>
                 <textarea name="message"></textarea>
-                <input id="newReviewButton" type="submit"/>
+                <j:choose>
+                    <j:when test="${checklistItems!=null and !checklistItems.get(0).isEmpty()}">
+                        <input id="newReviewButton" type="submit" disabled="true" />
+                    </j:when>
+                    <j:otherwise>
+                        <input id="newReviewButton" type="submit" />
+                    </j:otherwise>
+                </j:choose>
             </div>
 		</div>
 	</div>
@@ -79,15 +98,15 @@
 			var messageValue = message.value;
 			var statusValue = statusRadio.value;
 
-			new Ajax.Request('codeReview/review', {
-				method: 'post',
-				parameters: {message: messageValue, status: statusValue},
-				onSuccess: function(response) {
-					window.location.reload();
-				},
-				onError: function(response) {
-					console.log("error", response);
-				}
+                new Ajax.Request('codeReview/review', {
+                    method: 'post',
+                    parameters: {message: messageValue, status: statusValue},
+                    onSuccess: function(response) {
+                        window.location.reload();
+                    },
+                    onError: function(response) {
+                        console.log("error", response);
+                    }
 			});
 		});
 
@@ -99,6 +118,23 @@
                     hiddenForm[0].toggleClassName('hidden-form', false);
                 }
             });
+        });
+        $$(".checkbox").each(function(it){
+            it.observe('click', function(evt){
+                var isChecked = true;
+                $$(".checkbox").each(function(it){
+                if(!it.checked){
+                    isChecked=false;
+                }
+            });
+            if(isChecked){
+
+                $("newReviewButton").removeAttribute("disabled");
+            }
+            if(!isChecked){
+                $("newReviewButton").setAttribute("disabled", true);
+            }
+        });
         });
 	</script>
 </j:jelly>
