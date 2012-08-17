@@ -63,14 +63,14 @@
 			</div>
             <div class="hidden-form">
                 <j:set var="checklistItems" value="${it.getChecklistItems()}"/>
-                <j:if test="${checklistItems!=null and !checklistItems.get(0).isEmpty()}">
+                <j:if test="${checklistItems!=null and !checklistItems.isEmpty() and !checklistItems.get(0).isEmpty()}">
                     <j:forEach var="checklistItem" items="${checklistItems}">
                         <input type="checkbox" value="checklistItem" class="checkbox">${checklistItem}</input><br/>
                     </j:forEach>
                 </j:if>
                 <textarea name="message"></textarea>
                 <j:choose>
-                    <j:when test="${checklistItems!=null and !checklistItems.get(0).isEmpty()}">
+                    <j:when test="${checklistItems!=null and !checklistItems.isEmpty() and !checklistItems.get(0).isEmpty()}">
                         <input id="newReviewButton" type="submit" disabled="true" />
                     </j:when>
                     <j:otherwise>
@@ -86,6 +86,9 @@
 		$('newReviewButton').observe('click', function(e) {
 			var message = $('newReviewForm').down('textarea[name=message]');
 
+			$$('#newReviewForm input').each(function(it){ it.disable(); });
+			$$('#newReviewForm textarea').each(function(it){ it.disable(); });
+
             var statusRadio;
             var statusRadios = $$("#newReviewForm .status input");
             for(var i = 0; i &lt; statusRadios.length; i++) {
@@ -98,15 +101,15 @@
 			var messageValue = message.value;
 			var statusValue = statusRadio.value;
 
-                new Ajax.Request('codeReview/review', {
-                    method: 'post',
-                    parameters: {message: messageValue, status: statusValue},
-                    onSuccess: function(response) {
-                        window.location.reload();
-                    },
-                    onError: function(response) {
-                        console.log("error", response);
-                    }
+			new Ajax.Request('codeReview/review', {
+				method: 'post',
+				parameters: {message: messageValue, status: statusValue},
+				onSuccess: function(response) {
+					window.location.reload();
+				},
+				onError: function(response) {
+					console.log("error", response);
+				}
 			});
 		});
 

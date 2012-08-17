@@ -98,7 +98,7 @@
 
 
 			<j:forEach items="${table.rows}" var="row" indexVar="i">
-				<tr id="row-${row.getName()}" class="${row.isHighlighted() ? 'highlighted' : ''}">
+				<tr id="row-${row.getName()}" class="${row.generateFlatCommitterList()} ${row.isHighlighted() ? 'highlighted' : ''}">
 					<j:if test="${customColumn != null}">
 						<td class="customColumn">
 							${customColumn.beforeRow(row)}

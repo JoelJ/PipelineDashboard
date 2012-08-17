@@ -1,9 +1,6 @@
 package com.attask.jenkins.codereviewer;
 
-import hudson.model.AbstractBuild;
-import hudson.model.Cause;
-import hudson.model.Run;
-import hudson.model.User;
+import hudson.model.*;
 import hudson.scm.ChangeLogSet;
 import hudson.tasks.Mailer;
 import jenkins.model.Jenkins;
@@ -32,24 +29,23 @@ import java.util.logging.Logger;
 public class CodeReviewAction extends BaseCodeReviewAction {
 	private int requiredReviews;
 	private int requiredVerifies;
-    private List<String> checklistItems;
+	private List<String> checklistItems;
 
-    public static Logger LOGGER = Logger.getLogger(CodeReviewAction.class.getSimpleName());
+	public static Logger LOGGER = Logger.getLogger(CodeReviewAction.class.getSimpleName());
 	private final String buildId;
 	private final List<Review> reviewList;
 	private final List<Review> verifyList;
-    private final Set<User> userList;
 
-	public CodeReviewAction(Run build, int requiredReviews, int requiredVerifies,String[] checkListItems) {
+	public CodeReviewAction(Run build, int requiredReviews, int requiredVerifies, String[] checkListItems) {
 		this.buildId = build.getExternalizableId();
 		this.requiredReviews = requiredReviews;
 		this.requiredVerifies = requiredVerifies;
-        if(checkListItems!=null){
-            Collections.addAll(this.checklistItems, checkListItems);
-        }
+		this.checklistItems = new ArrayList<String>();
+		if (checkListItems != null) {
+			Collections.addAll(this.checklistItems, checkListItems);
+		}
 		this.reviewList = new ArrayList<Review>();
 		this.verifyList = new ArrayList<Review>();
-        this.userList=new HashSet<User>();
 	}
 
 	@Override
@@ -62,44 +58,45 @@ public class CodeReviewAction extends BaseCodeReviewAction {
 
 	@Override
 	public void doReview(StaplerRequest request, StaplerResponse response,
-						@QueryParameter(required = true) Review.Status status, @QueryParameter(required = true) String message) throws IOException {
-        if (message != null && !message.isEmpty()) {
-            addReview(status, message, new Date(), User.current());
-        }
-        response.sendRedirect("..");
+						 @QueryParameter(required = true) Review.Status status, @QueryParameter(required = true) String message) throws IOException {
+		if (message != null && !message.isEmpty()) {
+			addReview(status, message, new Date(), User.current());
+		}
+		response.sendRedirect("..");
 	}
 
-    @Override
-    public void doDeleteReview(StaplerRequest request, StaplerResponse response, @QueryParameter(required = true) String id) throws IOException {
-        deleteR(id);
+	@Override
+	public void doDeleteReview(StaplerRequest request, StaplerResponse response, @QueryParameter(required = true) String id) throws IOException {
+		deleteR(id);
 
-        response.sendRedirect("..");
-    }
+		response.sendRedirect("..");
+	}
 
-    @Override
-    public void doDeleteVerification(StaplerRequest request, StaplerResponse response, @QueryParameter(required = true) String id) throws IOException {
-        deleteV(id);
+	@Override
+	public void doDeleteVerification(StaplerRequest request, StaplerResponse response, @QueryParameter(required = true) String id) throws IOException {
+		deleteV(id);
 
-        response.sendRedirect("..");
-    }
+		response.sendRedirect("..");
+	}
 
-    public void deleteR(String id){
-        delete(reviewList, id);
-    }
+	public void deleteR(String id) {
+		delete(reviewList, id);
+	}
 
-    public void deleteV(String id){
-        delete(verifyList,id);
-    }
+	public void deleteV(String id) {
+		delete(verifyList, id);
+	}
 
-    public void delete(List<Review> reviews, String id){
-        for(Review review: reviews){
-            if(review.getId().equals(id)){
-                reviews.remove(review);
-                return;
-            }
-        }
-    }
-    /**
+	public void delete(List<Review> reviews, String id) {
+		for (Review review : reviews) {
+			if (review.getId().equals(id)) {
+				reviews.remove(review);
+				return;
+			}
+		}
+	}
+
+	/**
 	 * Adds a new verification to the code review.
 	 * Verifications are meant to be used by other jobs to report the status.
 	 */
@@ -111,130 +108,186 @@ public class CodeReviewAction extends BaseCodeReviewAction {
 	 * Adds a new review to the code review.
 	 * Reviews are meant to be done by human users.
 	 */
-	public void addReview(Review.Status status, String message, Date date, User author) throws IOException{
-		Review reviewToEmail=addReview(reviewList, date, status, message, author);
-        sendEmail(reviewToEmail);
-    }
+	public void addReview(Review.Status status, String message, Date date, User author) throws IOException {
+		Review reviewToEmail = addReview(reviewList, date, status, message, author);
+		sendEmail(reviewToEmail);
+	}
 
-    private void sendEmail(Review review){
+	private void sendEmail(Review review) {
+		Set<User> alreadySentTo = new HashSet<User>();
+		AbstractBuild build = (AbstractBuild) findBuild();
+		Cause.UserCause cause = (Cause.UserCause) build.getCause(Cause.UserCause.class);
+		if (cause != null) {
+			User user = User.get(cause.getUserName());
+			if(alreadySentTo.add(user)) {
+				try {
+					sendMailToUser(build, user, review);
+				} catch (MessagingException e) {
+					LOGGER.log(Level.SEVERE, "Sending Email to triggerer BROKE!!");
+					e.printStackTrace();
+				}
+			}
+		}
+		Cause.UserIdCause userIdCause = (Cause.UserIdCause) build.getCause(Cause.UserIdCause.class);
+		if(userIdCause != null) {
+			String userId = userIdCause.getUserId();
+			User user = User.get(userId);
+			if(alreadySentTo.add(user)) {
+				try {
+					sendMailToUser(build, user, review);
+				} catch (MessagingException e) {
+					LOGGER.log(Level.SEVERE, "Sending Email to triggerer BROKE!!");
+					e.printStackTrace();
+				}
+			}
+		}
 
-        AbstractBuild build = (AbstractBuild) findBuild();
-        Cause.UserCause cause = (Cause.UserCause) build.getCause(Cause.UserCause.class);
-        if(cause!=null){
-            User user = User.get(cause.getUserName());
-            try {
-                sendMailToUser(build, user,review);
-            } catch (MessagingException e) {
-                LOGGER.log(Level.SEVERE,"Sending Email to triggerer BROKE!!");
-                e.printStackTrace();
-            }
-        }
-        ChangeLogSet changeSet = build.getChangeSet();
-        for (Object o  : changeSet) {
-            ChangeLogSet.Entry change = (ChangeLogSet.Entry) o;
-            User user = change.getAuthor();
-            try {
-                sendMailToUser(build, user, review);
-            } catch (MessagingException e) {
-                LOGGER.log(Level.SEVERE,"Sending emails BROKE!");
-                e.printStackTrace();
-            }
+		ChangeLogSet changeSet = build.getChangeSet();
+		for (Object o : changeSet) {
+			ChangeLogSet.Entry change = (ChangeLogSet.Entry) o;
+			User user = change.getAuthor();
+			if (alreadySentTo.add(user)) {
+				try {
+					sendMailToUser(build, user, review);
+				} catch (MessagingException e) {
+					LOGGER.log(Level.SEVERE, "Sending emails BROKE!");
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 
-        }
-    }
+	private void sendMailToUser(AbstractBuild build, User user, Review review) throws MessagingException {
+		if (build == null) {
+			LOGGER.warning("build null");
+			return;
+		}
+		if (user == null) {
+			LOGGER.warning("user null");
+			return;
+		}
+		if (review == null) {
+			LOGGER.warning("review null");
+			return;
+		}
 
-    private void sendMailToUser(AbstractBuild build, User user, Review review) throws MessagingException {
-        if(!userList.contains(user)){
-            userList.add(user);
-            String email = user.getProperty(Mailer.UserProperty.class).getAddress();
-            LOGGER.log(Level.FINE,"Sending email!");
-            MimeMessage msg=new MimeMessage(Mailer.descriptor().createSession());
-            msg.setFrom(new InternetAddress(Mailer.descriptor().getAdminAddress()));
-            String datUrl = Jenkins.getInstance().getRootUrl() + build.getUrl();
-            setMailMessage(build, review, msg, datUrl);
-            msg.setSentDate(new Date());
-            msg.setRecipient(Message.RecipientType.TO, new InternetAddress(email));
-            msg.setSubject("Build: " + build.getId());
+		String toEmail = getEmailForUser(user);
+		if (toEmail != null && !toEmail.isEmpty()) {
+			LOGGER.log(Level.FINE, "Sending email!");
+			MimeMessage msg = new MimeMessage(Mailer.descriptor().createSession());
+			User author = review.getAuthor();
+			if(author == null) {
+				author = User.getUnknown();
+			}
+			String fromEmail = getEmailForUser(author);
+			if(fromEmail == null || fromEmail.isEmpty()) {
+				fromEmail = Mailer.descriptor().getAdminAddress();
+			}
 
-            Transport.send(msg);
+			msg.setFrom(new InternetAddress(fromEmail));
+			String url = Jenkins.getInstance().getRootUrl() + build.getUrl();
+			String mailMessage = getMailMessage(build, review, url);
+			msg.setContent(mailMessage, "text/html");
+			msg.setSentDate(new Date());
+			msg.setRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
+			msg.setSubject(author.getFullName() + " has " + review.getStatus() + " build " + build.getFullDisplayName());
 
-        }
-    }
+			Transport.send(msg);
+		}
+	}
 
-    private void setMailMessage(AbstractBuild build, Review review, MimeMessage msg, String url) throws MessagingException {
-        StringBuilder messageBuilder=new StringBuilder();
-        messageBuilder.append("<style>.review {border: 1px solid black;padding-left: 5px;padding-right: 5px;padding-top: 5px;padding-bottom: 5px;margin-top: 5px;margin-bottom: 5px;max-width: 500px;}.review .message {\n" +
-                "    display: block;\n" +
-                "}\n" +
-                "\n" +
-                ".review .author {\n" +
-                "    display: block;\n" +
-                "    font-style: italic;\n" +
-                "}\n" +
-                "\n" +
-                ".review .date {\n" +
-                "    font-size: smaller;\n" +
-                "    margin-left: 5px;\n" +
-                "}\n" +
-                "\n" +
-                ".review .author::before {\n" +
-                "    content: \"~\";\n" +
-                "}\n" +
-                "\n" +
-                ".review.Accepted {\n" +
-                "    border-color: black;\n" +
-                "}\n" +
-                ".review.Accepted .status {\n" +
-                "    color: green;\n" +
-                "    font-weight: bold;\n" +
-                "}\n" +
-                "\n" +
-                ".review.Rejected {\n" +
-                "    border-color: red;\n" +
-                "}\n" +
-                "\n" +
-                ".review.Rejected .status {\n" +
-                "    color: red;\n" +
-                "    font-weight: bold;\n" +
-                "}\n" +
-                "\n" +
-                ".review.NotReviewed {\n" +
-                "    border-color: lightgray;\n" +
-                "    color: gray;\n" +
-                "}\n" +
-                "\n" +
-                ".review.NotReviewed .status {\n" +
-                "    font-weight: bold;\n" +
-                "}</style>");
+	private String getEmailForUser(User user) {
+		if(user == null) {
+			return null;
+		}
 
-        messageBuilder.append("<br/>");
-        messageBuilder.append("Build ");
-        messageBuilder.append(build.getFullDisplayName());
-        messageBuilder.append(" just got reviewed!");
-        messageBuilder.append("<div class=\"review ");
-        messageBuilder.append(review.getStatus());
-        messageBuilder.append("\"><span class=\"status\">");
-        messageBuilder.append(review.getStatus());
-        messageBuilder.append("</span> <span class=\"date\">");
-        messageBuilder.append(review.getDate()).append("</span><span class=\"message\"><pre>");
-        messageBuilder.append(review.getMessage());
-        messageBuilder.append("</pre></span><span class=\"author\">");
-        messageBuilder.append(review.getAuthor()).append("</span></div>");
+		if(user.equals(User.getUnknown())) {
+			return Mailer.descriptor().getAdminAddress();
+		}
 
-        msg.setContent(messageBuilder.toString()+"<br/>Click here to see the review!<br/><a href=" + url + "\">" + build.getFullDisplayName() + "</a>", "text/html");
-    }
+		String email = null;
+		Mailer.UserProperty userProperty = user.getProperty(Mailer.UserProperty.class);
+		if (userProperty != null) {
+			email = userProperty.getAddress();
+		}
+		return email;
+	}
 
-    private Review addReview(List<Review> toAddTo, Date date, Review.Status status, String message, User author) throws IOException {
-		if(date == null) {
+	private String getMailMessage(AbstractBuild build, Review review, String url) throws MessagingException {
+		StringBuilder messageBuilder = new StringBuilder();
+		messageBuilder.append("<style>.review {border: 1px solid black;padding-left: 5px;padding-right: 5px;padding-top: 5px;padding-bottom: 5px;margin-top: 5px;margin-bottom: 5px;max-width: 500px;}.review .message {\n" +
+				"    display: block;\n" +
+				"}\n" +
+				"\n" +
+				".review .author {\n" +
+				"    display: block;\n" +
+				"    font-style: italic;\n" +
+				"}\n" +
+				"\n" +
+				".review .date {\n" +
+				"    font-size: smaller;\n" +
+				"    margin-left: 5px;\n" +
+				"}\n" +
+				"\n" +
+				".review .author::before {\n" +
+				"    content: \"~\";\n" +
+				"}\n" +
+				"\n" +
+				".review.Accepted {\n" +
+				"    border-color: black;\n" +
+				"}\n" +
+				".review.Accepted .status {\n" +
+				"    color: green;\n" +
+				"    font-weight: bold;\n" +
+				"}\n" +
+				"\n" +
+				".review.Rejected {\n" +
+				"    border-color: red;\n" +
+				"}\n" +
+				"\n" +
+				".review.Rejected .status {\n" +
+				"    color: red;\n" +
+				"    font-weight: bold;\n" +
+				"}\n" +
+				"\n" +
+				".review.NotReviewed {\n" +
+				"    border-color: lightgray;\n" +
+				"    color: gray;\n" +
+				"}\n" +
+				"\n" +
+				".review.NotReviewed .status {\n" +
+				"    font-weight: bold;\n" +
+				"}</style>");
+
+		messageBuilder.append("<br/>");
+		messageBuilder.append("Build ");
+		messageBuilder.append(build.getFullDisplayName());
+		messageBuilder.append(" just got reviewed!");
+		messageBuilder.append("<div class=\"review ");
+		messageBuilder.append(review.getStatus());
+		messageBuilder.append("\"><span class=\"status\">");
+		messageBuilder.append(review.getStatus());
+		messageBuilder.append("</span> <span class=\"date\">");
+		messageBuilder.append(review.getDate()).append("</span><span class=\"message\"><pre>");
+		messageBuilder.append(review.getMessage());
+		messageBuilder.append("</pre></span><span class=\"author\">");
+		String userName = review.getAuthor() == null ? "Some Fool" : review.getAuthor().getFullName();
+		messageBuilder.append(userName).append("</span></div>");
+		messageBuilder.append("<br/>Click here to see the review!<br/><a href=").append(url).append("\">").append(build.getFullDisplayName()).append("</a>");
+		return messageBuilder.toString();
+	}
+
+	private Review addReview(List<Review> toAddTo, Date date, Review.Status status, String message, User author) throws IOException {
+		if (date == null) {
 			date = new Date();
 		}
-		if(author == null) {
+		if (author == null) {
 			author = User.current();
 		}
 		Review review = new Review(date, status, message, author);
 		toAddTo.add(0, review);
 		findBuild().save();
-        return review;
+		return review;
 	}
 
 	public Run findBuild() {
@@ -243,9 +296,10 @@ public class CodeReviewAction extends BaseCodeReviewAction {
 
 	/**
 	 * Calculates whether or not the build should or can be accepted based on the verifications.
+	 *
 	 * @return The result is calculated based on the number of positive reviews and the number of reviews required.
-	 * If any reviews have a rejected status, the entire build is rejected.
-	 * Neutral statuses are ignored.
+	 *         If any reviews have a rejected status, the entire build is rejected.
+	 *         Neutral statuses are ignored.
 	 */
 	public Review.Status calculateVerifiedStatus() {
 		return calculateStatus(verifyList, requiredVerifies);
@@ -253,9 +307,10 @@ public class CodeReviewAction extends BaseCodeReviewAction {
 
 	/**
 	 * Calculates whether or not the build should or can be accepted based on the user reviews.
+	 *
 	 * @return The result is calculated based on the number of positive reviews and the number of reviews required.
-	 * If any reviews have a rejected status, the entire build is rejected.
-	 * Neutral statuses are ignored.
+	 *         If any reviews have a rejected status, the entire build is rejected.
+	 *         Neutral statuses are ignored.
 	 */
 	public Review.Status calculateReviewStatus() {
 		return calculateStatus(reviewList, requiredReviews);
@@ -304,7 +359,7 @@ public class CodeReviewAction extends BaseCodeReviewAction {
 		return buildId;
 	}
 
-    public List<String> getChecklistItems() {
-        return checklistItems;
-    }
+	public List<String> getChecklistItems() {
+		return checklistItems;
+	}
 }

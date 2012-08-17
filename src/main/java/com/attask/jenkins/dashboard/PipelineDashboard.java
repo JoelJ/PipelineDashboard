@@ -203,7 +203,7 @@ public class PipelineDashboard extends View {
 					Run build = builds[i];
 					JobColumn columnHeader = jobColumns.get(i);
 
-					if(build != null) {
+					if(build != null && build.getParent() != null && columnHeader != null) {
 						if(!build.getParent().getName().equals(columnHeader.getJobName())) {
 							LOGGER.log(Level.SEVERE, "Out of sync! columnHeader: " +  columnHeader.getJobName() + " Build: " + build.getParent().getName());
 						}
