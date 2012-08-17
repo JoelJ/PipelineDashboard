@@ -32,11 +32,11 @@
 }
 
 .review .message::before {
-    content: '“';
+    content: '"';
 }
 
 .review .message::after {
-    content: '”';
+    content: '"';
 }
 
 .review .author::before {
@@ -119,4 +119,14 @@
 
 #newReviewForm .hidden-form {
     display: none;
+}
+
+.review .delete {
+    float: right;
+    opacity: .3;
+}
+
+.review .delete:hover {
+    float: right;
+    opacity: .75;
 }
