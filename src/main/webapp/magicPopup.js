@@ -43,6 +43,10 @@ var closePopup = (function(e) {
 
 var showContent = (function(element, url, x, y) {
 	element = $(element);
+	element.innerHTML = "Loading...";
+	element.style.left = x + "px";
+	element.style.top = y + "px";
+	element.style.display = "block";
 	new Ajax.Request(url, {
 		method:'get',
 		onSuccess:function (transport) {
@@ -63,19 +67,36 @@ var showContent = (function(element, url, x, y) {
 			var html = '<div class="header">Revisions Included in Run</div>';
 			changeSet.each(function(it) {
 				var hash = it.id.replace('<','&lt;');
+				var comment = it.comment.trim().replace('<','&lt;');
+				var baseURLForIssue = "https://dot8.attask.com/search?objCode=OPTASK&query=";
+				var baseURLForTask = "https://dot8.attask.com/search?objCode=TASK&query=";
+				var hashRegex = /\b[0-9a-f]{40}/;
+				var issueRegex = /[Ii]ssue[:]? (\d+).*?/;
+				var taskRegex = /[Tt]ask[:]? (\d+).*?/;
+				if(hashRegex.test(comment)) {
+					var newHash = hashRegex.exec(comment)[0];
+					comment = comment.replace(hashRegex, newHash+ " (<a target='_blank' href='http://git.ops.ut.us.attask.com/git/?p=attask.git;a=commitdiff;h="+newHash+"'>git</a>|<a target='_blank' href='#row-"+newHash+"'>jenkins</a>)");
+				}
+				if(issueRegex.test(comment)) {
+					var issueNumber = issueRegex.exec(comment)[1];
+					comment = comment.replace(issueRegex, "Issue <a target='_blank' href='" + baseURLForIssue + issueNumber+"'>"+issueNumber+"</a>");
+				}
+				
+				if(taskRegex.test(comment)) {
+					var taskNumber = taskRegex.exec(comment)[1];
+					comment = comment.replace(taskRegex, "Task <a target='_blank' href='" + baseURLForTask + taskNumber+"'>"+taskNumber+"</a>");
+				}
+
 				html += '<hr/>';
 				html += '<div class="commit">';
-				html += 	'<div>Revision: <span class="revision"><a href="http://git.ops.ut.us.attask.com/git/?p=attask.git;a=commit;h='+hash+'">'+hash+'</a></span></div>';
-				html += 	'<div>Author: <span class="author">'+it.author.fullName.replace('<','&lt;')+'</span></div>';
-				html += 	'<div>Date: <span class="comment">'+it.date.replace('<','&lt;') +"</span></div>";
-				html += 	'<div>Comment: <span class="comment"><pre>'+it.comment.trim().replace('<','&lt;')+'</pre></span></div>';
+				html += '<div>Revision: <span class="revision">'+hash+' (<a target="_blank" href="http://git.ops.ut.us.attask.com/git/?p=attask.git;a=commitdiff;h='+hash+'">git</a>)</span></div>';
+				html += '<div>Author: <span class="author">'+it.author.fullName.replace('<','&lt;')+'</span></div>';
+				html += '<div>Date: <span class="comment">'+it.date.replace('<','&lt;') +"</span></div>";
+				html += '<div>Comment: <span class="comment"><pre>'+comment+'</pre></span></div>';
 				html += '</div>';
 			});
 
 			element.innerHTML = html;
-			element.style.left = x + "px";
-			element.style.top = y + "px";
-			element.style.display = "block";
 		}
 	});
 });
